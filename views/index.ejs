@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setu: Filtered Safe Internet Browser</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="browser-body">
+
+    <!-- Top Navigation Header -->
+    <header class="browser-navbar">
+        <div class="nav-brand">
+            <a href="/" class="brand-logo">
+                <span class="logo-icon">🛡️</span>
+                <span class="logo-text">Setu<span class="logo-highlight">Browser</span></span>
+            </a>
+            <span class="safe-badge">
+                <span class="pulse-dot"></span> SafeSearch AI Active
+            </span>
+        </div>
+        
+        <div class="nav-actions">
+            <a href="/parent-login" class="parent-lock-btn" title="Parent Dashboard Security Lock">
+                <span class="lock-icon">🔒</span>
+                <span class="lock-label">Parent Dashboard</span>
+            </a>
+        </div>
+    </header>
+
+    <!-- Browser Mock Window Frame -->
+    <main class="browser-container">
+        
+        <!-- Browser Title & Control Bar -->
+        <div class="browser-chrome-bar">
+            <div class="window-controls">
+                <span class="control-dot close"></span>
+                <span class="control-dot minimize"></span>
+                <span class="control-dot expand"></span>
+            </div>
+            
+            <div class="browser-address-bar">
+                <span class="ssl-shield">🔒 https://</span>
+                <span class="address-url">safe.setubrowser.org/search?q=<%= formQuery ? encodeURIComponent(formQuery) : '' %></span>
+                <span class="age-pill">Child Age: <%= formAge %> yrs</span>
+            </div>
+            
+            <div class="chrome-actions">
+                <button type="button" onclick="location.href='/'" class="chrome-btn" title="Refresh Page">🔄</button>
+            </div>
+        </div>
+
+        <!-- Search Bar Hero Section -->
+        <section class="browser-search-section">
+            <div class="search-header">
+                <h1 class="search-title">Explore the Internet Safely</h1>
+                <p class="search-subtitle">Smart AI filtering, real search results, and pediatric safety grounding.</p>
+            </div>
+
+            <form method="POST" action="/search" class="search-form">
+                <div class="search-input-wrapper">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" id="query" name="query" class="main-search-input" 
+                           placeholder="Search dinosaurs, volcanoes, science projects, math games..." 
+                           value="<%= formQuery || '' %>" required autocomplete="off">
+                    
+                    <div class="age-selector-wrapper">
+                        <label for="age" class="age-label">Age:</label>
+                        <select id="age" name="age" class="age-select">
+                            <% [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].forEach(function(a) { %>
+                                <option value="<%= a %>" <%= (formAge == a) ? 'selected' : '' %>><%= a %> Years Old</option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="search-submit-btn">
+                        <span>Search Safely</span>
+                        <span class="btn-arrow">→</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Search Quick Tags -->
+            <div class="quick-tags">
+                <span class="tag-label">Popular Safe Topics:</span>
+                <a href="javascript:void(0)" onclick="quickSearch('Dinosaur fossils and T-Rex facts')" class="topic-tag">🦖 Dinosaurs</a>
+                <a href="javascript:void(0)" onclick="quickSearch('Volcano eruptions and magma')" class="topic-tag">🌋 Volcanoes</a>
+                <a href="javascript:void(0)" onclick="quickSearch('Solar system planets for kids')" class="topic-tag">🪐 Solar System</a>
+                <a href="javascript:void(0)" onclick="quickSearch('Fun coding games for beginners')" class="topic-tag">💻 Coding Games</a>
+            </div>
+        </section>
+
+        <!-- Search Category Navigation Tabs -->
+        <% if (queryResult) { %>
+        <nav class="search-tabs-nav">
+            <button class="tab-item active">🌐 All Web Results</button>
+            <button class="tab-item">🎓 Educational Sites</button>
+            <button class="tab-item">🎨 Images & Visuals</button>
+            <button class="tab-item">🎥 Safe Videos</button>
+        </nav>
+        <% } %>
+
+        <!-- Search Results / Blocked Research View Area -->
+        <div class="browser-content-area">
+            <% if (!queryResult) { %>
+                <!-- Empty State Hero -->
+                <div class="empty-state-card">
+                    <div class="empty-icon">🛡️✨</div>
+                    <h3>Setu Filtered Safe Search is Ready</h3>
+                    <p>Enter any query above to explore child-safe websites. Unsafe or risky topics are automatically filtered and explained with peer-reviewed pediatric research.</p>
+                </div>
+            <% } else { %>
+                
+                <!-- Query Banner Summary -->
+                <div class="query-summary-bar">
+                    <div class="summary-info">
+                        <span class="query-term">"<%= formQuery %>"</span>
+                        <span class="query-meta">Evaluated for Age <%= formAge %></span>
+                    </div>
+                    <div class="status-indicator-badge status-<%= queryResult.status.toLowerCase() %>">
+                        <% if (queryResult.status === 'Allowed') { %>
+                            ✅ Safe Content Allowed
+                        <% } else if (queryResult.status === 'Risky') { %>
+                            ⚠️ Caution: Risky Topic
+                        <% } else { %>
+                            ⛔ Blocked Content Filter
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- 1. ALLOWED STATE: Rich Search Results List -->
+                <% if (queryResult.status === 'Allowed') { %>
+                    <div class="results-header">
+                        <span class="results-count">Found <%= queryResult.searchResults.length %> verified safe search results</span>
+                        <span class="results-badge">Setu Safety Grade A+</span>
+                    </div>
+
+                    <div class="search-results-list">
+                        <% queryResult.searchResults.forEach(function(item) { %>
+                            <article class="search-card">
+                                <div class="card-meta">
+                                    <span class="domain-url"><%= item.domain %></span>
+                                    <span class="category-chip"><%= item.category %></span>
+                                    <span class="safe-badge-pill">✓ <%= item.badge %></span>
+                                </div>
+                                <h2 class="card-title">
+                                    <a href="<%= item.url %>" target="_blank" rel="noopener"><%= item.title %></a>
+                                </h2>
+                                <p class="card-snippet"><%= item.snippet %></p>
+                                <div class="card-footer">
+                                    <a href="<%= item.url %>" target="_blank" class="visit-link">
+                                        Open Safe Page ↗
+                                    </a>
+                                </div>
+                            </article>
+                        <% }); %>
+                    </div>
+
+                    <!-- Related Safe Alternatives -->
+                    <% if (queryResult.safeAlternatives && queryResult.safeAlternatives.length > 0) { %>
+                        <div class="safe-alternatives-card">
+                            <h3>💡 Related Safe Search Suggestions:</h3>
+                            <div class="suggestions-chips">
+                                <% queryResult.safeAlternatives.forEach(function(alt) { %>
+                                    <a href="javascript:void(0)" onclick="quickSearch('<%= alt %>')" class="suggestion-chip">
+                                        🔍 <%= alt %>
+                                    </a>
+                                <% }); %>
+                            </div>
+                        </div>
+                    <% } %>
+
+                <!-- 2. RISKY or BLOCKED STATE: Safety Protection Shield & PubMed Research Paper Citation -->
+                <% } else { %>
+                    
+                    <div class="blocked-protection-container">
+                        
+                        <!-- Protection Warning Header -->
+                        <div class="protection-header-card <%= queryResult.status.toLowerCase() %>-theme">
+                            <div class="shield-big-icon">
+                                <%= queryResult.status === 'Blocked' ? '🛑' : '⚠️' %>
+                            </div>
+                            <div class="protection-text">
+                                <h2>Search Protection Active (<%= queryResult.status %>)</h2>
+                                <p class="protection-explanation"><%= queryResult.explanation %></p>
+                            </div>
+                        </div>
+
+                        <!-- Scientific & Developmental Research Grounding Box -->
+                        <% if (queryResult.researchCitation) { %>
+                            <div class="research-grounding-card">
+                                <div class="research-badge-header">
+                                    <span class="pubmed-icon">🔬</span>
+                                    <div>
+                                        <h3 class="research-card-title">Scientific & Developmental Research Grounding</h3>
+                                        <p class="research-subtext">Evidence from peer-reviewed pediatric literature explaining the safety rationale</p>
+                                    </div>
+                                </div>
+
+                                <div class="paper-details-box">
+                                    <h4 class="paper-title">"<%= queryResult.researchCitation.title %>"</h4>
+                                    <p class="paper-authors">
+                                        <strong>Authors:</strong> <%= queryResult.researchCitation.authors %> | 
+                                        <strong>Journal:</strong> <em><%= queryResult.researchCitation.journal %></em> (<%= queryResult.researchCitation.year %>)
+                                    </p>
+                                    
+                                    <div class="takeaway-callout">
+                                        <span class="takeaway-label">Key Developmental Takeaway:</span>
+                                        <p><%= queryResult.researchCitation.keyTakeaway %></p>
+                                    </div>
+
+                                    <% if (queryResult.researchCitation.quoteSnippet) { %>
+                                        <div class="quote-box">
+                                            <span class="quote-icon">“</span>
+                                            <p><%= queryResult.researchCitation.quoteSnippet %></p>
+                                        </div>
+                                    <% } %>
+
+                                    <div class="pubmed-link-wrapper">
+                                        <a href="<%= queryResult.researchCitation.url %>" target="_blank" rel="noopener" class="pubmed-btn">
+                                            📖 Read Full Research Paper on PubMed (PMID: <%= queryResult.researchCitation.pmid %>) ↗
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+
+                        <!-- Constructive Educational Alternatives -->
+                        <% if (queryResult.safeAlternatives && queryResult.safeAlternatives.length > 0) { %>
+                            <div class="safe-alternatives-card">
+                                <h3>🌱 Safe Educational Alternatives for Age <%= formAge %>:</h3>
+                                <div class="suggestions-chips">
+                                    <% queryResult.safeAlternatives.forEach(function(alt) { %>
+                                        <a href="javascript:void(0)" onclick="quickSearch('<%= alt %>')" class="suggestion-chip">
+                                            🔍 <%= alt %>
+                                        </a>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
+
+                    </div>
+
+                <% } %>
+
+            <% } %>
+        </div>
+
+        <!-- Footer Bar -->
+        <footer class="browser-footer">
+            <p>Setu Safe Internet Engine • AI Protection + PubMed Academic Grounding • <a href="/parent-login">Parent Dashboard Login</a></p>
+        </footer>
+
+    </main>
+
+    <script>
+        function quickSearch(topic) {
+            document.getElementById('query').value = topic;
+            document.querySelector('.search-form').submit();
+        }
+    </script>
+</body>
+</html>

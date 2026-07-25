@@ -1,0 +1,8 @@
+{
+  "name": "Setu: Safe Internet",
+  "description": "Child-safe internet search filter and parent monitoring dashboard powered by Gemini.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

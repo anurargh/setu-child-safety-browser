@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setu: Parent Safety Monitoring Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dashboard-body">
+
+    <!-- Top Navigation Header -->
+    <header class="dash-navbar">
+        <div class="nav-brand">
+            <a href="/dashboard?auth=1" class="brand-logo">
+                <span class="logo-icon">🛡️</span>
+                <span class="logo-text">Setu<span class="logo-highlight">Parent</span></span>
+            </a>
+            <span class="auth-status-badge">🔓 Authenticated Parent Session</span>
+        </div>
+
+        <div class="nav-actions">
+            <a href="/" class="browser-return-btn">
+                <span>🌐 Open Child Browser</span>
+            </a>
+            <form method="POST" action="/parent-logout" style="display:inline;">
+                <button type="submit" class="logout-btn">
+                    <span>🔒 Lock & Logout</span>
+                </button>
+            </form>
+        </div>
+    </header>
+
+    <main class="dash-container">
+
+        <!-- PIN Update Notification -->
+        <% if (pinUpdatedMessage) { %>
+            <div class="notification-toast <%= pinUpdatedMessage.includes('Error') ? 'error' : 'success' %>">
+                <span><%= pinUpdatedMessage %></span>
+            </div>
+        <% } %>
+
+        <!-- Security & Activity Overview Header -->
+        <section class="dash-hero">
+            <div class="hero-text">
+                <h1>Child Search Protection & Insights</h1>
+                <p>Monitor search activity, examine flagged queries, and inspect PubMed scientific research grounding.</p>
+            </div>
+            
+            <div class="security-status-card alert-<%= alertLevel %>">
+                <div class="status-icon">
+                    <%= alertLevel === 'clean' ? '✅' : (alertLevel === 'warning' ? '⚠️' : '🚨') %>
+                </div>
+                <div>
+                    <h3 class="status-title">Security Threat Monitor</h3>
+                    <p class="status-desc"><%= securityAlert %></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Metric Cards Grid -->
+        <section class="metrics-grid">
+            <div class="metric-card total">
+                <div class="metric-value"><%= totalCount %></div>
+                <div class="metric-label">Total Queries Evaluated</div>
+                <span class="metric-sub font-mono">100% Real-Time AI Review</span>
+            </div>
+
+            <div class="metric-card allowed">
+                <div class="metric-value"><%= allowedCount %></div>
+                <div class="metric-label">Safe / Allowed</div>
+                <span class="metric-sub">Child-Friendly Results Rendered</span>
+            </div>
+
+            <div class="metric-card risky">
+                <div class="metric-value"><%= riskyCount %></div>
+                <div class="metric-label">Risky / Caution</div>
+                <span class="metric-sub">Educational Research Cited</span>
+            </div>
+
+            <div class="metric-card blocked">
+                <div class="metric-value"><%= blockedCount %></div>
+                <div class="metric-label">Blocked Content</div>
+                <span class="metric-sub">Harmful Content Filtered</span>
+            </div>
+        </section>
+
+        <!-- Logs Management & Filter Bar -->
+        <section class="logs-section">
+            
+            <div class="section-header">
+                <h2>Child Activity Logs</h2>
+                
+                <div class="actions-group">
+                    <div class="filter-pills">
+                        <a href="/dashboard?filter=all&auth=1" class="pill <%= currentFilter === 'all' ? 'active' : '' %>">All (<%= totalCount %>)</a>
+                        <a href="/dashboard?filter=allowed&auth=1" class="pill <%= currentFilter === 'allowed' ? 'active' : '' %>">Allowed (<%= allowedCount %>)</a>
+                        <a href="/dashboard?filter=risky&auth=1" class="pill <%= currentFilter === 'risky' ? 'active' : '' %>">Risky (<%= riskyCount %>)</a>
+                        <a href="/dashboard?filter=blocked&auth=1" class="pill <%= currentFilter === 'blocked' ? 'active' : '' %>">Blocked (<%= blockedCount %>)</a>
+                    </div>
+
+                    <div class="export-dropdown">
+                        <a href="/parent-export?format=csv&auth=1" class="export-btn">📥 Export CSV</a>
+                        <a href="/parent-export?format=json&auth=1" class="export-btn secondary">📥 Export JSON</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Table of Logged Queries -->
+            <% if (queries && queries.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Child Age</th>
+                                <th>Search Query</th>
+                                <th>Status</th>
+                                <th>AI Protection Rationale</th>
+                                <th>Scientific / PubMed Citation</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% queries.forEach(function(item) { %>
+                                <tr class="row-status-<%= item.status.toLowerCase() %>">
+                                    <td class="time-cell"><%= item.timestamp %></td>
+                                    <td class="age-cell"><span class="age-badge"><%= item.age %>y</span></td>
+                                    <td class="query-cell">
+                                        <span class="query-text">"<%= item.query %>"</span>
+                                    </td>
+                                    <td class="status-cell">
+                                        <span class="status-tag status-<%= item.status.toLowerCase() %>">
+                                            <%= item.status %>
+                                        </span>
+                                    </td>
+                                    <td class="explanation-cell">
+                                        <%= item.explanation %>
+                                    </td>
+                                    <td class="citation-cell">
+                                        <% if (item.researchCitation) { %>
+                                            <div class="citation-brief">
+                                                <strong class="citation-title"><%= item.researchCitation.title %></strong>
+                                                <span class="citation-journal"><%= item.researchCitation.journal %> (<%= item.researchCitation.year %>)</span>
+                                                <a href="<%= item.researchCitation.url %>" target="_blank" rel="noopener" class="citation-link">
+                                                    PubMed PMID: <%= item.researchCitation.pmid %> ↗
+                                                </a>
+                                            </div>
+                                        <% } else { %>
+                                            <span class="text-muted">N/A (Allowed)</span>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="empty-logs-box">
+                    <p>No search records found for filter "<strong><%= currentFilter %></strong>".</p>
+                </div>
+            <% } %>
+
+        </section>
+
+        <!-- Security Settings & PIN Management -->
+        <section class="settings-grid">
+            
+            <div class="settings-card">
+                <h3>🔒 Security & Parent PIN Management</h3>
+                <p>Change your parent dashboard security PIN to ensure unauthorized access is prevented.</p>
+                
+                <form method="POST" action="/parent-change-pin?auth=1" class="settings-form">
+                    <div class="form-row">
+                        <div class="form-field">
+                            <label for="currentPin">Current PIN:</label>
+                            <input type="password" id="currentPin" name="currentPin" placeholder="••••" required class="form-input">
+                        </div>
+                        <div class="form-field">
+                            <label for="newPin">New PIN (4+ digits):</label>
+                            <input type="password" id="newPin" name="newPin" placeholder="••••" required class="form-input">
+                        </div>
+                    </div>
+                    <button type="submit" class="save-pin-btn">Update Parent PIN</button>
+                </form>
+            </div>
+
+            <div class="settings-card danger-zone">
+                <h3>⚠️ Data Management & Logs</h3>
+                <p>Clear all logged child queries or reset activity history for a fresh monitoring session.</p>
+                
+                <form method="POST" action="/parent-clear-logs?auth=1" onsubmit="return confirm('Are you sure you want to delete all search history logs?');">
+                    <button type="submit" class="clear-logs-btn">Clear All Activity History</button>
+                </form>
+            </div>
+
+        </section>
+
+    </main>
+
+</body>
+</html>

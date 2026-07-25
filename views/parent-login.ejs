@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setu: Parent Security Login</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-body">
+
+    <div class="auth-container">
+        
+        <div class="auth-card">
+            
+            <div class="auth-header">
+                <div class="auth-shield-icon">🔒</div>
+                <h1>Parent Dashboard Access</h1>
+                <p>Enter your 4-digit security PIN to access search activity logs, safety filters, and parental settings.</p>
+            </div>
+
+            <% if (error) { %>
+                <div class="auth-error-alert">
+                    <span class="error-icon">⚠️</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+            <form method="POST" action="/parent-login" class="auth-form">
+                <div class="pin-input-group">
+                    <label for="pin">Parent Security PIN</label>
+                    <input type="password" id="pin" name="pin" maxlength="10" placeholder="••••" required autofocus class="pin-field">
+                </div>
+
+                <!-- Onscreen Quick Keypad -->
+                <div class="pin-keypad">
+                    <% [1, 2, 3, 4, 5, 6, 7, 8, 9, 0].forEach(function(num) { %>
+                        <button type="button" class="keypad-btn" onclick="appendPin('<%= num %>')"><%= num %></button>
+                    <% }); %>
+                    <button type="button" class="keypad-btn clear" onclick="clearPin()">C</button>
+                </div>
+
+                <button type="submit" class="auth-submit-btn">
+                    <span>Unlock Parent Dashboard</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+            </form>
+
+            <div class="auth-tip-box">
+                <p>💡 <strong>Default PIN:</strong> <code>1234</code> (You can change this PIN anytime inside the Parent Dashboard settings).</p>
+            </div>
+
+            <div class="auth-footer">
+                <a href="/" class="back-link">← Return to Safe Child Browser</a>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        function appendPin(val) {
+            const field = document.getElementById('pin');
+            if (field.value.length < 10) {
+                field.value += val;
+            }
+        }
+        function clearPin() {
+            document.getElementById('pin').value = '';
+        }
+    </script>
+</body>
+</html>
