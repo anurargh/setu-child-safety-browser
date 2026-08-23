@@ -3,152 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setu: Parent Safety Monitoring Dashboard</title>
+    <title>Setu • Caretaker Dashboard & Safety Garden</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
-<body class="dashboard-body">
+<body class="dashboard-sanctuary-body">
 
-    <!-- Top Navigation Header -->
+    <!-- Ambient Organic Background Blobs -->
+    <div class="organic-ambient-bg" aria-hidden="true">
+        <div class="organic-blob blob-1"></div>
+        <div class="organic-blob blob-2"></div>
+        <div class="organic-blob blob-3"></div>
+    </div>
+
+    <!-- Caretaker Top Navigation -->
     <header class="dash-navbar">
         <div class="nav-brand">
-            <a href="/dashboard?auth=1" class="brand-logo">
-                <span class="logo-icon">🛡️</span>
-                <span class="logo-text">Setu<span class="logo-highlight">Parent</span></span>
+            <a href="/dashboard?auth=1" class="brand-link" id="dash-home-link">
+                <div class="brand-crest">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"/>
+                        <path d="M12 8C12 8 10 10.5 10 12.5C10 13.88 10.9 15 12 15C13.1 15 14 13.88 14 12.5C14 10.5 12 8 12 8Z"/>
+                    </svg>
+                </div>
+                <div class="brand-text-group">
+                    <span class="brand-name">Setu Caretaker</span>
+                    <span class="brand-subtitle">Garden Oversight & Insights</span>
+                </div>
             </a>
-            <span class="auth-status-badge">🔓 Authenticated Parent Session</span>
+            <span class="tended-badge">
+                <span class="dew-drop-pulse"></span>
+                <span>Sanctuary Session Authenticated</span>
+            </span>
         </div>
 
-        <div class="nav-actions">
-            <a href="/" class="browser-return-btn">
-                <span>🌐 Open Child Browser</span>
+        <div class="tended-nav-actions">
+            <a href="/" class="dash-open-child-btn" id="open-child-garden-btn">
+                <span>🌱 Open Child Garden</span>
             </a>
             <form method="POST" action="/parent-logout" style="display:inline;">
-                <button type="submit" class="logout-btn">
-                    <span>🔒 Lock & Logout</span>
+                <button type="submit" class="dash-lock-logout-btn" id="dash-logout-btn">
+                    <span>🔒 Lock & Exit</span>
                 </button>
             </form>
         </div>
     </header>
 
-    <main class="dash-container">
+    <main class="dash-tended-container">
 
-        <!-- PIN Update Notification -->
+        <!-- Notification Toast -->
         <% if (pinUpdatedMessage) { %>
-            <div class="notification-toast <%= pinUpdatedMessage.includes('Error') ? 'error' : 'success' %>">
+            <div class="tended-toast <%= pinUpdatedMessage.includes('Error') ? 'toast-error' : 'toast-success' %>" id="action-notification-toast">
+                <span><%= pinUpdatedMessage.includes('Error') ? '⚠️' : '🌿' %></span>
                 <span><%= pinUpdatedMessage %></span>
             </div>
         <% } %>
 
-        <!-- Security & Activity Overview Header -->
-        <section class="dash-hero">
-            <div class="hero-text">
-                <h1>Child Search Protection & Insights</h1>
-                <p>Monitor search activity, examine flagged queries, and inspect PubMed scientific research grounding.</p>
+        <!-- Caretaker Reassuring Overview Deck -->
+        <section class="dash-hero-deck">
+            <div class="hero-lead-text">
+                <h1>The Caretaker's Garden Overview</h1>
+                <p>Gentle, transparent oversight into your child's curiosities, search rationale, and peer-reviewed safety citations.</p>
             </div>
             
-            <div class="security-status-card alert-<%= alertLevel %>">
-                <div class="status-icon">
-                    <%= alertLevel === 'clean' ? '✅' : (alertLevel === 'warning' ? '⚠️' : '🚨') %>
+            <div class="garden-health-monitor monitor-<%= alertLevel %>" id="security-monitor-status">
+                <div class="monitor-icon">
+                    <%= alertLevel === 'clean' ? '🌿' : (alertLevel === 'warning' ? '🌾' : '🛡️') %>
                 </div>
                 <div>
-                    <h3 class="status-title">Security Threat Monitor</h3>
-                    <p class="status-desc"><%= securityAlert %></p>
+                    <h3 class="monitor-title">Garden Balance Status</h3>
+                    <p class="monitor-desc"><%= securityAlert %></p>
                 </div>
             </div>
         </section>
 
-        <!-- Metric Cards Grid -->
-        <section class="metrics-grid">
-            <div class="metric-card total">
-                <div class="metric-value"><%= totalCount %></div>
-                <div class="metric-label">Total Queries Evaluated</div>
-                <span class="metric-sub font-mono">100% Real-Time AI Review</span>
+        <!-- Metric River-Stones Grid -->
+        <section class="tended-metrics-grid" aria-label="Activity Metrics">
+            <div class="metric-river-stone total" id="metric-total-card">
+                <div class="metric-count"><%= totalCount %></div>
+                <div class="metric-label-text">Total Inquiries Logged</div>
+                <span class="metric-sub-note">100% Real-Time AI Review</span>
             </div>
 
-            <div class="metric-card allowed">
-                <div class="metric-value"><%= allowedCount %></div>
-                <div class="metric-label">Safe / Allowed</div>
-                <span class="metric-sub">Child-Friendly Results Rendered</span>
+            <div class="metric-river-stone allowed" id="metric-allowed-card">
+                <div class="metric-count"><%= allowedCount %></div>
+                <div class="metric-label-text">Flourishing & Allowed</div>
+                <span class="metric-sub-note">Safe educational websites provided</span>
             </div>
 
-            <div class="metric-card risky">
-                <div class="metric-value"><%= riskyCount %></div>
-                <div class="metric-label">Risky / Caution</div>
-                <span class="metric-sub">Educational Research Cited</span>
+            <div class="metric-river-stone risky" id="metric-risky-card">
+                <div class="metric-count"><%= riskyCount %></div>
+                <div class="metric-label-text">Guidance Recommended</div>
+                <span class="metric-sub-note">Research grounding cited</span>
             </div>
 
-            <div class="metric-card blocked">
-                <div class="metric-value"><%= blockedCount %></div>
-                <div class="metric-label">Blocked Content</div>
-                <span class="metric-sub">Harmful Content Filtered</span>
+            <div class="metric-river-stone blocked" id="metric-blocked-card">
+                <div class="metric-count"><%= blockedCount %></div>
+                <div class="metric-label-text">Harmful Content Shielded</div>
+                <span class="metric-sub-note">Protected before exposure</span>
             </div>
         </section>
 
-        <!-- Logs Management & Filter Bar -->
-        <section class="logs-section">
+        <!-- Tended Activity Logs & Filter Section -->
+        <section class="tended-activity-section" id="activity-logs-section">
             
-            <div class="section-header">
-                <h2>Child Activity Logs</h2>
+            <div class="activity-header-bar">
+                <h2>Exploration Activity Log</h2>
                 
-                <div class="actions-group">
-                    <div class="filter-pills">
-                        <a href="/dashboard?filter=all&auth=1" class="pill <%= currentFilter === 'all' ? 'active' : '' %>">All (<%= totalCount %>)</a>
-                        <a href="/dashboard?filter=allowed&auth=1" class="pill <%= currentFilter === 'allowed' ? 'active' : '' %>">Allowed (<%= allowedCount %>)</a>
-                        <a href="/dashboard?filter=risky&auth=1" class="pill <%= currentFilter === 'risky' ? 'active' : '' %>">Risky (<%= riskyCount %>)</a>
-                        <a href="/dashboard?filter=blocked&auth=1" class="pill <%= currentFilter === 'blocked' ? 'active' : '' %>">Blocked (<%= blockedCount %>)</a>
+                <div class="activity-controls-cluster">
+                    <div class="filter-stone-group" aria-label="Filter Inquiries">
+                        <a href="/dashboard?filter=all&auth=1" class="filter-stone-pill <%= currentFilter === 'all' ? 'active' : '' %>">All (<%= totalCount %>)</a>
+                        <a href="/dashboard?filter=allowed&auth=1" class="filter-stone-pill <%= currentFilter === 'allowed' ? 'active' : '' %>">Safe (<%= allowedCount %>)</a>
+                        <a href="/dashboard?filter=risky&auth=1" class="filter-stone-pill <%= currentFilter === 'risky' ? 'active' : '' %>">Guidance (<%= riskyCount %>)</a>
+                        <a href="/dashboard?filter=blocked&auth=1" class="filter-stone-pill <%= currentFilter === 'blocked' ? 'active' : '' %>">Shielded (<%= blockedCount %>)</a>
                     </div>
 
-                    <div class="export-dropdown">
-                        <a href="/parent-export?format=csv&auth=1" class="export-btn">📥 Export CSV</a>
-                        <a href="/parent-export?format=json&auth=1" class="export-btn secondary">📥 Export JSON</a>
+                    <div class="export-pebble-actions">
+                        <a href="/parent-export?format=csv&auth=1" class="export-pebble-btn" id="export-csv-btn">📥 CSV</a>
+                        <a href="/parent-export?format=json&auth=1" class="export-pebble-btn" id="export-json-btn">📥 JSON</a>
                     </div>
                 </div>
             </div>
 
             <!-- Table of Logged Queries -->
             <% if (queries && queries.length > 0) { %>
-                <div class="table-responsive">
-                    <table class="logs-table">
+                <div class="tended-table-wrap">
+                    <table class="tended-activity-table" id="inquiries-data-table">
                         <thead>
                             <tr>
                                 <th>Timestamp</th>
-                                <th>Child Age</th>
+                                <th>Age</th>
                                 <th>Search Query</th>
-                                <th>Status</th>
-                                <th>AI Protection Rationale</th>
-                                <th>Scientific / PubMed Citation</th>
+                                <th>Safety Verdict</th>
+                                <th>Caretaker Rationale</th>
+                                <th>Academic / PubMed Evidence</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <% queries.forEach(function(item) { %>
-                                <tr class="row-status-<%= item.status.toLowerCase() %>">
-                                    <td class="time-cell"><%= item.timestamp %></td>
-                                    <td class="age-cell"><span class="age-badge"><%= item.age %>y</span></td>
-                                    <td class="query-cell">
-                                        <span class="query-text">"<%= item.query %>"</span>
-                                    </td>
-                                    <td class="status-cell">
-                                        <span class="status-tag status-<%= item.status.toLowerCase() %>">
-                                            <%= item.status %>
+                            <% queries.forEach(function(item, idx) { %>
+                                <tr id="query-row-<%= idx %>">
+                                    <td class="table-time-cell"><%= item.timestamp %></td>
+                                    <td><span class="table-age-badge"><%= item.age %>y</span></td>
+                                    <td class="table-query-cell">"<%= item.query %>"</td>
+                                    <td>
+                                        <span class="status-pill status-<%= item.status.toLowerCase() %>">
+                                            <%= item.status === 'Allowed' ? '🌿 Safe' : (item.status === 'Risky' ? '🌾 Guidance' : '🛡️ Shielded') %>
                                         </span>
                                     </td>
-                                    <td class="explanation-cell">
+                                    <td class="table-explanation-cell">
                                         <%= item.explanation %>
                                     </td>
-                                    <td class="citation-cell">
+                                    <td>
                                         <% if (item.researchCitation) { %>
-                                            <div class="citation-brief">
-                                                <strong class="citation-title"><%= item.researchCitation.title %></strong>
-                                                <span class="citation-journal"><%= item.researchCitation.journal %> (<%= item.researchCitation.year %>)</span>
-                                                <a href="<%= item.researchCitation.url %>" target="_blank" rel="noopener" class="citation-link">
+                                            <div class="table-citation-pebble">
+                                                <strong class="table-citation-title"><%= item.researchCitation.title %></strong>
+                                                <span class="table-citation-journal"><%= item.researchCitation.journal %> (<%= item.researchCitation.year %>)</span>
+                                                <a href="<%= item.researchCitation.url %>" target="_blank" rel="noopener" class="table-citation-link">
                                                     PubMed PMID: <%= item.researchCitation.pmid %> ↗
                                                 </a>
                                             </div>
                                         <% } else { %>
-                                            <span class="text-muted">N/A (Allowed)</span>
+                                            <span style="color: #929F96; font-size: 0.825rem;">—</span>
                                         <% } %>
                                     </td>
                                 </tr>
@@ -157,41 +174,41 @@
                     </table>
                 </div>
             <% } else { %>
-                <div class="empty-logs-box">
-                    <p>No search records found for filter "<strong><%= currentFilter %></strong>".</p>
+                <div style="text-align: center; padding: 3rem 1rem; color: #6C7A70;">
+                    <p>No activity logs found for filter "<strong><%= currentFilter %></strong>".</p>
                 </div>
             <% } %>
 
         </section>
 
-        <!-- Security Settings & PIN Management -->
-        <section class="settings-grid">
+        <!-- Caretaker Settings & PIN Management -->
+        <section class="caretaker-settings-deck">
             
-            <div class="settings-card">
-                <h3>🔒 Security & Parent PIN Management</h3>
-                <p>Change your parent dashboard security PIN to ensure unauthorized access is prevented.</p>
+            <div class="tended-settings-card" id="pin-management-card">
+                <h3>🔒 Caretaker Security PIN</h3>
+                <p>Update your parent sanctuary PIN to ensure child privacy boundaries and supervisory security.</p>
                 
-                <form method="POST" action="/parent-change-pin?auth=1" class="settings-form">
-                    <div class="form-row">
-                        <div class="form-field">
+                <form method="POST" action="/parent-change-pin?auth=1" class="tended-pin-form">
+                    <div class="tended-form-grid">
+                        <div class="tended-field">
                             <label for="currentPin">Current PIN:</label>
-                            <input type="password" id="currentPin" name="currentPin" placeholder="••••" required class="form-input">
+                            <input type="password" id="currentPin" name="currentPin" placeholder="••••" required class="tended-input">
                         </div>
-                        <div class="form-field">
+                        <div class="tended-field">
                             <label for="newPin">New PIN (4+ digits):</label>
-                            <input type="password" id="newPin" name="newPin" placeholder="••••" required class="form-input">
+                            <input type="password" id="newPin" name="newPin" placeholder="••••" required class="tended-input">
                         </div>
                     </div>
-                    <button type="submit" class="save-pin-btn">Update Parent PIN</button>
+                    <button type="submit" class="tended-primary-btn" id="save-pin-button">Update Caretaker PIN</button>
                 </form>
             </div>
 
-            <div class="settings-card danger-zone">
-                <h3>⚠️ Data Management & Logs</h3>
-                <p>Clear all logged child queries or reset activity history for a fresh monitoring session.</p>
+            <div class="tended-settings-card" id="data-archive-card">
+                <h3>⚠️ History Archive & Reset</h3>
+                <p>Reset child inquiry records or clear activity history when starting a new supervisory cycle.</p>
                 
-                <form method="POST" action="/parent-clear-logs?auth=1" onsubmit="return confirm('Are you sure you want to delete all search history logs?');">
-                    <button type="submit" class="clear-logs-btn">Clear All Activity History</button>
+                <form method="POST" action="/parent-clear-logs?auth=1" onsubmit="return confirm('Are you sure you wish to clear all search history logs?');">
+                    <button type="submit" class="tended-danger-btn" id="clear-activity-history-btn">Reset All Activity Logs</button>
                 </form>
             </div>
 
