@@ -21,7 +21,7 @@
     <!-- Caretaker Top Navigation -->
     <header class="dash-navbar">
         <div class="nav-brand">
-            <a href="/dashboard?auth=1" class="brand-link" id="dash-home-link">
+            <a href="/dashboard" class="brand-link" id="dash-home-link">
                 <div class="brand-crest">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"/>
@@ -33,19 +33,27 @@
                     <span class="brand-subtitle">Garden Oversight & Insights</span>
                 </div>
             </a>
-            <span class="tended-badge">
-                <span class="dew-drop-pulse"></span>
-                <span>Sanctuary Session Authenticated</span>
-            </span>
+            <% if (user) { %>
+                <div class="dash-user-pill">
+                    <img src="<%= user.avatar %>" alt="<%= user.name %>" class="dash-avatar-thumb" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Setu';">
+                    <span><%= user.name %></span>
+                    <span class="account-verified-check">✓</span>
+                </div>
+            <% } else { %>
+                <span class="tended-badge">
+                    <span class="dew-drop-pulse"></span>
+                    <span>Sanctuary Session Active</span>
+                </span>
+            <% } %>
         </div>
 
         <div class="tended-nav-actions">
             <a href="/" class="dash-open-child-btn" id="open-child-garden-btn">
                 <span>🌱 Open Child Garden</span>
             </a>
-            <form method="POST" action="/parent-logout" style="display:inline;">
+            <form method="POST" action="/logout" style="display:inline;">
                 <button type="submit" class="dash-lock-logout-btn" id="dash-logout-btn">
-                    <span>🔒 Lock & Exit</span>
+                    <span>🔒 Logout & Secure</span>
                 </button>
             </form>
         </div>
@@ -64,7 +72,7 @@
         <!-- Caretaker Reassuring Overview Deck -->
         <section class="dash-hero-deck">
             <div class="hero-lead-text">
-                <h1>The Caretaker's Garden Overview</h1>
+                <h1>The Caretaker's Garden Sanctuary</h1>
                 <p>Gentle, transparent oversight into your child's curiosities, search rationale, and peer-reviewed safety citations.</p>
             </div>
             
@@ -78,6 +86,87 @@
                 </div>
             </div>
         </section>
+
+        <!-- Caretaker Account Profile & Unification Banner -->
+        <section class="caretaker-account-card" id="caretaker-profile-section">
+            <div class="account-card-left">
+                <% if (user) { %>
+                    <img src="<%= user.avatar %>" alt="<%= user.name %>" class="account-large-avatar" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Setu';">
+                    <div class="account-info-block">
+                        <div class="account-name-row">
+                            <h2><%= user.name %></h2>
+                            <span class="auth-provider-chip <%= user.authProvider %>">
+                                <% if (user.authProvider === 'both') { %>
+                                    🌿 Unified (Google + Password)
+                                <% } else if (user.authProvider === 'google') { %>
+                                    🌐 Google Account
+                                <% } else { %>
+                                    ✉️ Email & Password
+                                <% } %>
+                            </span>
+                        </div>
+                        <p class="account-email-line">
+                            <strong>Registered Email:</strong> <%= user.email %> • 
+                            <strong>Member since:</strong> <%= user.createdAt.substring(0, 10) %>
+                        </p>
+                        <div class="account-persistence-note">
+                            <span class="persistence-icon">🔒</span>
+                            <span><strong>Account Saved & Persistent:</strong> You never have to create another account. You can log in anytime with your Google account or email credentials across sessions.</span>
+                        </div>
+                    </div>
+                <% } else { %>
+                    <div class="account-info-block">
+                        <h2>Guest Caretaker Session (PIN Unlocked)</h2>
+                        <p class="account-email-line">You are currently accessing via temporary 4-digit PIN unlock. Register once to sync your settings and keep your dashboard permanently saved.</p>
+                        <div style="margin-top: 0.75rem;">
+                            <a href="/register" class="register-now-cta">✨ Create Permanent Account</a>
+                        </div>
+                    </div>
+                <% } %>
+            </div>
+
+            <div class="account-card-right">
+                <div class="status-summary-box">
+                    <div class="summary-line">
+                        <span>Database & Auth:</span>
+                        <strong class="status-active">🔥 Firebase (Cloud Firestore)</strong>
+                    </div>
+                    <div class="summary-line">
+                        <span>Google Sign-In:</span>
+                        <strong class="<%= isGoogleConfigured ? 'status-active' : 'status-sandbox' %>">
+                            <%= isGoogleConfigured ? '✓ Live OAuth Ready' : '⚡ Sandbox Test Active' %>
+                        </strong>
+                    </div>
+                    <div class="summary-line">
+                        <span>Session Length:</span>
+                        <strong>30 Days (Persistent)</strong>
+                    </div>
+                    <div class="summary-line">
+                        <span>Child Security PIN:</span>
+                        <% if (user && user.parentPin) { %>
+                            <strong class="status-active">Set by Caretaker ✓</strong>
+                        <% } else { %>
+                            <strong style="color: #c94a29; font-weight: 700;">Not Set (Action Required)</strong>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <% if (user && !user.parentPin) { %>
+            <div class="sanctuary-notice-pebble" style="background: rgba(224, 122, 95, 0.12); border: 1.5px dashed rgba(224, 122, 95, 0.4); border-radius: 16px; padding: 1.1rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.85rem;">
+                    <span style="font-size: 1.6rem;">🔒</span>
+                    <div>
+                        <strong style="color: #8c3b24; display: block; font-family: 'Fraunces', serif; font-size: 1.05rem;">Set Your Child's Security PIN</strong>
+                        <span style="color: #58675b; font-size: 0.88rem;">Each account sets their own individual PIN for their child. You have not set a PIN yet.</span>
+                    </div>
+                </div>
+                <a href="#pin-management-card" style="padding: 0.55rem 1.25rem; background: #2f5439; color: #fff; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.86rem;">
+                    Set Child PIN Now →
+                </a>
+            </div>
+        <% } %>
 
         <!-- Metric River-Stones Grid -->
         <section class="tended-metrics-grid" aria-label="Activity Metrics">
@@ -114,15 +203,15 @@
                 
                 <div class="activity-controls-cluster">
                     <div class="filter-stone-group" aria-label="Filter Inquiries">
-                        <a href="/dashboard?filter=all&auth=1" class="filter-stone-pill <%= currentFilter === 'all' ? 'active' : '' %>">All (<%= totalCount %>)</a>
-                        <a href="/dashboard?filter=allowed&auth=1" class="filter-stone-pill <%= currentFilter === 'allowed' ? 'active' : '' %>">Safe (<%= allowedCount %>)</a>
-                        <a href="/dashboard?filter=risky&auth=1" class="filter-stone-pill <%= currentFilter === 'risky' ? 'active' : '' %>">Guidance (<%= riskyCount %>)</a>
-                        <a href="/dashboard?filter=blocked&auth=1" class="filter-stone-pill <%= currentFilter === 'blocked' ? 'active' : '' %>">Shielded (<%= blockedCount %>)</a>
+                        <a href="/dashboard?filter=all" class="filter-stone-pill <%= currentFilter === 'all' ? 'active' : '' %>">All (<%= totalCount %>)</a>
+                        <a href="/dashboard?filter=allowed" class="filter-stone-pill <%= currentFilter === 'allowed' ? 'active' : '' %>">Safe (<%= allowedCount %>)</a>
+                        <a href="/dashboard?filter=risky" class="filter-stone-pill <%= currentFilter === 'risky' ? 'active' : '' %>">Guidance (<%= riskyCount %>)</a>
+                        <a href="/dashboard?filter=blocked" class="filter-stone-pill <%= currentFilter === 'blocked' ? 'active' : '' %>">Shielded (<%= blockedCount %>)</a>
                     </div>
 
                     <div class="export-pebble-actions">
-                        <a href="/parent-export?format=csv&auth=1" class="export-pebble-btn" id="export-csv-btn">📥 CSV</a>
-                        <a href="/parent-export?format=json&auth=1" class="export-pebble-btn" id="export-json-btn">📥 JSON</a>
+                        <a href="/parent-export?format=csv" class="export-pebble-btn" id="export-csv-btn">📥 CSV</a>
+                        <a href="/parent-export?format=json" class="export-pebble-btn" id="export-json-btn">📥 JSON</a>
                     </div>
                 </div>
             </div>
@@ -181,33 +270,120 @@
 
         </section>
 
-        <!-- Caretaker Settings & PIN Management -->
+        <!-- Caretaker Settings & Account Management Deck -->
         <section class="caretaker-settings-deck">
             
-            <div class="tended-settings-card" id="pin-management-card">
-                <h3>🔒 Caretaker Security PIN</h3>
-                <p>Update your parent sanctuary PIN to ensure child privacy boundaries and supervisory security.</p>
+            <!-- 1. Password & Account Security -->
+            <% if (user) { %>
+            <div class="tended-settings-card" id="account-password-card">
+                <h3>🔑 Account Password & Multi-Method Login</h3>
+                <p>
+                    <% if (user.passwordHash) { %>
+                        Your account has a password configured. You can update it below or use Google Single Sign-On at any time.
+                    <% } else { %>
+                        You registered using Google. You can set a password below to enable logging in with both your Email/Password and Google.
+                    <% } %>
+                </p>
                 
-                <form method="POST" action="/parent-change-pin?auth=1" class="tended-pin-form">
+                <form method="POST" action="/account/update-password" class="tended-pin-form">
                     <div class="tended-form-grid">
                         <div class="tended-field">
-                            <label for="currentPin">Current PIN:</label>
-                            <input type="password" id="currentPin" name="currentPin" placeholder="••••" required class="tended-input">
+                            <label for="newPassword">New Password (6+ chars):</label>
+                            <input type="password" id="newPassword" name="newPassword" minlength="6" placeholder="••••••••" required class="tended-input">
                         </div>
                         <div class="tended-field">
-                            <label for="newPin">New PIN (4+ digits):</label>
-                            <input type="password" id="newPin" name="newPin" placeholder="••••" required class="tended-input">
+                            <label for="confirmPassword">Confirm Password:</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" minlength="6" placeholder="••••••••" required class="tended-input">
                         </div>
                     </div>
-                    <button type="submit" class="tended-primary-btn" id="save-pin-button">Update Caretaker PIN</button>
+                    <button type="submit" class="tended-primary-btn" id="update-password-btn">
+                        <%= user.passwordHash ? 'Update Account Password' : 'Set Account Password' %>
+                    </button>
+                </form>
+            </div>
+            <% } %>
+
+            <!-- 2. Security PIN Management -->
+            <div class="tended-settings-card" id="pin-management-card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <div>
+                        <h3>🔒 Child Security PIN</h3>
+                        <p style="margin: 0;">Each individual account sets their own PIN for their child. Protects parental controls and gate unlock boundaries.</p>
+                    </div>
+                    <% if (user && user.parentPin) { %>
+                        <span class="guide-chip chip-live">✓ Custom PIN Active</span>
+                    <% } else { %>
+                        <span class="guide-chip chip-sandbox" style="background: rgba(224, 122, 95, 0.15); color: #c94a29;">⚠️ PIN Not Set</span>
+                    <% } %>
+                </div>
+
+                <% if (user && user.parentPin) { %>
+                    <div style="background: rgba(84, 122, 93, 0.08); border-radius: 12px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+                        <span style="font-size: 0.92rem; color: #2d3b31;">
+                            Active PIN for this device: <strong id="current-pin-display" style="letter-spacing: 3px; font-family: monospace; font-size: 1.1rem;">••••</strong>
+                        </span>
+                        <button type="button" class="copy-url-btn" onclick="togglePinVisibility('<%= user.parentPin %>')" id="toggle-pin-btn">Show PIN</button>
+                    </div>
+                <% } %>
+                
+                <form method="POST" action="/parent-change-pin" class="tended-pin-form">
+                    <div class="tended-form-grid">
+                        <% if (user && user.parentPin) { %>
+                            <div class="tended-field">
+                                <label for="currentPin">Current 4-Digit PIN:</label>
+                                <input type="password" id="currentPin" name="currentPin" placeholder="••••" required class="tended-input" autocomplete="off">
+                            </div>
+                        <% } %>
+                        <div class="tended-field">
+                            <label for="newPin"><%= (user && user.parentPin) ? 'New 4 to 6 Digit PIN:' : 'Set 4-Digit PIN for Child:' %></label>
+                            <input type="password" id="newPin" name="newPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="••••" required class="tended-input" autocomplete="off">
+                        </div>
+                    </div>
+                    <button type="submit" class="tended-primary-btn" id="save-pin-button">
+                        <%= (user && user.parentPin) ? 'Update Child Security PIN' : 'Save Child Security PIN' %>
+                    </button>
                 </form>
             </div>
 
+            <!-- 3. Google OAuth 2.0 Production Setup Guide -->
+            <div class="tended-settings-card oauth-guide-card" id="oauth-config-card">
+                <div class="guide-header-badge">
+                    <span class="guide-chip <%= isGoogleConfigured ? 'chip-live' : 'chip-sandbox' %>">
+                        <%= isGoogleConfigured ? '🟢 Live Production Active' : '🟡 Sandbox Mode (Instant Test Ready)' %>
+                    </span>
+                    <h3>Google OAuth 2.0 Integration Status</h3>
+                </div>
+                <p>To connect live Google Sign-In with your personal Google Cloud Console, register your application with these exact callback URLs:</p>
+                
+                <div class="callback-url-box">
+                    <div class="url-row">
+                        <span class="url-label">Development Callback URL:</span>
+                        <code class="url-code" id="dev-url-text"><%= devCallbackUrl %></code>
+                        <button type="button" class="copy-url-btn" onclick="copyText('<%= devCallbackUrl %>')">Copy</button>
+                    </div>
+                    <div class="url-row">
+                        <span class="url-label">Shared / Deployed Callback URL:</span>
+                        <code class="url-code" id="shared-url-text"><%= sharedCallbackUrl %></code>
+                        <button type="button" class="copy-url-btn" onclick="copyText('<%= sharedCallbackUrl %>')">Copy</button>
+                    </div>
+                </div>
+
+                <div class="guide-steps-list">
+                    <strong>📋 Quick 3-Step Setup in Google Cloud Console:</strong>
+                    <ol>
+                        <li>Visit <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Google Cloud Console &gt; Credentials</a> and create an <strong>OAuth 2.0 Web Client ID</strong>.</li>
+                        <li>Add the callback URLs above to <strong>Authorized redirect URIs</strong> and the origin to <strong>Authorized JavaScript origins</strong>.</li>
+                        <li>Add <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> to your AI Studio environment variables.</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- 4. History Archive & Reset -->
             <div class="tended-settings-card" id="data-archive-card">
                 <h3>⚠️ History Archive & Reset</h3>
                 <p>Reset child inquiry records or clear activity history when starting a new supervisory cycle.</p>
                 
-                <form method="POST" action="/parent-clear-logs?auth=1" onsubmit="return confirm('Are you sure you wish to clear all search history logs?');">
+                <form method="POST" action="/parent-clear-logs" onsubmit="return confirm('Are you sure you wish to clear all search history logs?');">
                     <button type="submit" class="tended-danger-btn" id="clear-activity-history-btn">Reset All Activity Logs</button>
                 </form>
             </div>
@@ -216,5 +392,27 @@
 
     </main>
 
+    <script>
+        function copyText(txt) {
+            navigator.clipboard.writeText(txt).then(function() {
+                alert('Copied callback URL to clipboard: ' + txt);
+            }).catch(function() {
+                prompt('Copy this callback URL:', txt);
+            });
+        }
+
+        function togglePinVisibility(actualPin) {
+            const display = document.getElementById('current-pin-display');
+            const btn = document.getElementById('toggle-pin-btn');
+            if (!display || !btn) return;
+            if (display.textContent.trim() === '••••') {
+                display.textContent = actualPin;
+                btn.textContent = 'Hide PIN';
+            } else {
+                display.textContent = '••••';
+                btn.textContent = 'Show PIN';
+            }
+        }
+    </script>
 </body>
 </html>

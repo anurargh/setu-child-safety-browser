@@ -42,10 +42,30 @@
         </div>
         
         <div class="nav-actions">
-            <a href="/parent-login" class="parent-lock-link" id="parent-login-link" title="Parental Oversight & Dashboard">
-                <span class="lock-glyph">🔒</span>
-                <span>Parent Sanctuary</span>
-            </a>
+            <% if (user) { %>
+                <a href="/dashboard" class="user-nav-badge" id="nav-user-profile-badge" title="Tended by <%= user.name %>">
+                    <img src="<%= user.avatar %>" alt="<%= user.name %>" class="user-nav-avatar" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Setu';">
+                    <div class="user-nav-text">
+                        <span class="user-nav-name"><%= user.name %></span>
+                        <span class="user-nav-role">Caretaker ✓</span>
+                    </div>
+                </a>
+                <a href="/dashboard" class="parent-lock-link" id="parent-dashboard-link" title="Open Sanctuary Dashboard">
+                    <span class="lock-glyph">🌿</span>
+                    <span>Dashboard</span>
+                </a>
+            <% } else { %>
+                <a href="/login" class="nav-signin-link" id="nav-login-link" title="Sign In to Sanctuary">
+                    <span>Sign In</span>
+                </a>
+                <a href="/register" class="nav-register-btn" id="nav-register-link" title="Create Free Account">
+                    <span>Register</span>
+                </a>
+                <a href="/parent-login" class="parent-lock-link" id="parent-login-link" title="Parental Oversight & Dashboard">
+                    <span class="lock-glyph">🔒</span>
+                    <span>Parent PIN</span>
+                </a>
+            <% } %>
         </div>
     </header>
 

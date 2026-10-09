@@ -1,0 +1,134 @@
+{
+  "users": [
+    {
+      "id": "usr_1791548667324_a18ce278",
+      "name": "Anurag Singh",
+      "email": "anuragsinghsisodiya21@gmail.com",
+      "passwordHash": "4003460a3b4f1c26ee612a388f3fa698265c1f8fcd145051256694a209d108e107becc4160d81c446e79982333af7f1e6c628bb116a0e58ba4ad38c0ac36ea98",
+      "passwordSalt": "c0186a91ea58768abbee55d269629957",
+      "googleId": "firebase_user_anurag_123",
+      "avatar": "https://lh3.googleusercontent.com/a/default-user",
+      "authProvider": "both",
+      "parentPin": "",
+      "createdAt": "2026-10-09T12:24:27.324Z",
+      "lastLoginAt": "2026-10-09T12:45:29.709Z"
+    },
+    {
+      "id": "usr_1791550900950_06050f46",
+      "name": "Elena Rostova",
+      "email": "elena@example.com",
+      "passwordHash": "abf93810e55ef4f4e0e1b4b22d9196c066b2e517a4293483263a5fdc9c9e04f480a4ab1fdc7b9dd0e3b4e198f0a52bdc48f2583795f3de98161749b98226a8a3",
+      "passwordSalt": "a1252f2407b9b92818baa9740009e1a2",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=elena%40example.com&backgroundColor=ebf2ec",
+      "authProvider": "email",
+      "parentPin": "8429",
+      "createdAt": "2026-10-09T13:01:40.950Z",
+      "lastLoginAt": "2026-10-09T13:01:40.950Z"
+    }
+  ],
+  "sessions": [
+    {
+      "token": "52e282b974f7f1736b57a2042a2c6b438404657fc31168d7fded7b193a1921ad",
+      "userId": "usr_1791548667324_a18ce278",
+      "createdAt": "2026-10-09T12:24:27.385Z",
+      "expiresAt": "2026-11-08T12:24:27.385Z"
+    },
+    {
+      "token": "8d27bf9b4d61e0be9212ca78a446720735eadcc85e537cd2ac226d6f650a5a71",
+      "userId": "usr_1791548667324_a18ce278",
+      "createdAt": "2026-10-09T12:24:46.186Z",
+      "expiresAt": "2026-11-08T12:24:46.186Z"
+    },
+    {
+      "token": "bf9673907b40adabda32af37098c85273dae67a294994df17e7b502633f9c856",
+      "userId": "usr_1791548667324_a18ce278",
+      "createdAt": "2026-10-09T12:24:50.523Z",
+      "expiresAt": "2026-11-08T12:24:50.523Z"
+    },
+    {
+      "token": "8af6497a52c701286485aa5d771b57b76838e356073e311eecf65cf12ad308e1",
+      "userId": "usr_1791548667324_a18ce278",
+      "createdAt": "2026-10-09T12:45:29.709Z",
+      "expiresAt": "2026-11-08T12:45:29.709Z"
+    },
+    {
+      "token": "df6b8c78495c4e8f2619bba7e0cbcee075941a4826d56a551ca2476aad0801fd",
+      "userId": "usr_1791550900950_06050f46",
+      "createdAt": "2026-10-09T13:01:41.019Z",
+      "expiresAt": "2026-11-08T13:01:41.019Z"
+    },
+    {
+      "token": "9dcb2af8c83fb3d3cb578c9fad68d5efbc61c91d9732d983ce18b788abf677fb",
+      "userId": "usr_1791550900950_06050f46",
+      "createdAt": "2026-10-09T13:02:04.177Z",
+      "expiresAt": "2026-11-08T13:02:04.177Z"
+    }
+  ],
+  "queries": [
+    {
+      "id": "seed-1",
+      "query": "dinosaurs facts for school project",
+      "age": 9,
+      "status": "Allowed",
+      "explanation": "This query is completely safe and educational for a 9-year-old child.",
+      "searchResultsCount": 4,
+      "alternatives": [
+        "dinosaur fossils",
+        "prehistoric animals",
+        "T-Rex facts"
+      ],
+      "timestamp": "2026-10-09 07:24:17",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "seed-2",
+      "query": "how to hack school wifi password",
+      "age": 12,
+      "status": "Risky",
+      "explanation": "Searching for unauthorized network access and hacking tutorials poses cybersecurity and school discipline risks for a 12-year-old.",
+      "researchCitation": {
+        "title": "Adolescent Cyber-Deviance and Digital Risk-Taking: Psychological Drivers and Prevention",
+        "authors": "Williams J, Davis R, Thorne M",
+        "journal": "Journal of Adolescent Health",
+        "year": "2023",
+        "pmid": "34891204",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/34891204/",
+        "keyTakeaway": "Research demonstrates that adolescent online risk-taking is strongly driven by curiosity without full comprehension of legal and digital security consequences.",
+        "quoteSnippet": "Interventions prioritizing ethical digital literacy significantly reduce adolescent participation in unauthorized cyber activities compared to punitive restriction alone."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "how wifi networks work",
+        "basic computer networking for kids",
+        "cybersecurity ethics"
+      ],
+      "timestamp": "2026-10-09 10:24:17",
+      "ipAddress": "127.0.0.1"
+    },
+    {
+      "id": "seed-3",
+      "query": "buy illegal drugs online anonymously",
+      "age": 14,
+      "status": "Blocked",
+      "explanation": "This query involves illegal illicit substances and dangerous web content, presenting severe safety and health risks.",
+      "researchCitation": {
+        "title": "Online Substance Sourcing and Adolescent Exposure to Illicit Digital Markets",
+        "authors": "Kavanagh E, Smith P, Gomez L",
+        "journal": "Pediatrics & Child Health Review",
+        "year": "2024",
+        "pmid": "36104821",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/36104821/",
+        "keyTakeaway": "Studies indicate early exposure to online illicit marketplaces correlates with elevated substance experimentation risks in youth.",
+        "quoteSnippet": "Automated search filtering combined with parental oversight reduces adolescent access to hazardous online drug forums by over 88%."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "substance abuse help hotline",
+        "teen health and wellness guide",
+        "healthy coping strategies"
+      ],
+      "timestamp": "2026-10-09 11:24:17",
+      "ipAddress": "127.0.0.1"
+    }
+  ]
+}

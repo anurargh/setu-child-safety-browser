@@ -1,0 +1,149 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered caretaker or parent account profile",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier of the user or auth UID",
+          "maxLength": 128
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name or display name of the caretaker",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "User email address",
+          "format": "email",
+          "maxLength": 200
+        },
+        "avatar": {
+          "type": "string",
+          "description": "Avatar image URL",
+          "maxLength": 500
+        },
+        "authProvider": {
+          "type": "string",
+          "description": "Authentication method used",
+          "enum": ["email", "google", "both"]
+        },
+        "parentPin": {
+          "type": "string",
+          "description": "4-6 digit caretaker safety PIN",
+          "maxLength": 10,
+          "pattern": "^[0-9]{4,6}$"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "ISO timestamp when user was created"
+        },
+        "lastLoginAt": {
+          "type": "string",
+          "description": "ISO timestamp of most recent login"
+        }
+      },
+      "required": ["id", "name", "email", "authProvider", "createdAt"]
+    },
+    "QueryLog": {
+      "title": "QueryLog",
+      "description": "Search history query record with safety evaluation and citations",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique log record ID",
+          "maxLength": 128
+        },
+        "userId": {
+          "type": "string",
+          "description": "Optional ID of caretaker or session",
+          "maxLength": 128
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "Email of caretaker whose child searched",
+          "maxLength": 200
+        },
+        "query": {
+          "type": "string",
+          "description": "Search query text",
+          "maxLength": 300
+        },
+        "age": {
+          "type": "number",
+          "description": "Child declared age at time of query"
+        },
+        "status": {
+          "type": "string",
+          "description": "Classification result",
+          "enum": ["Allowed", "Risky", "Blocked"]
+        },
+        "explanation": {
+          "type": "string",
+          "description": "Explanation with scientific grounding",
+          "maxLength": 3000
+        },
+        "searchResultsCount": {
+          "type": "number",
+          "description": "Number of filtered safe results presented"
+        },
+        "timestamp": {
+          "type": "string",
+          "description": "Timestamp string of query"
+        },
+        "ipAddress": {
+          "type": "string",
+          "description": "Client IP address",
+          "maxLength": 64
+        }
+      },
+      "required": ["id", "query", "age", "status", "timestamp"]
+    },
+    "CaretakerSettings": {
+      "title": "CaretakerSettings",
+      "description": "Caretaker preferences and filter policies",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "Owner caretaker user ID",
+          "maxLength": 128
+        },
+        "defaultPin": {
+          "type": "string",
+          "description": "Parent security PIN",
+          "maxLength": 10,
+          "pattern": "^[0-9]{4,6}$"
+        },
+        "safetyLevel": {
+          "type": "string",
+          "description": "Content strictness level",
+          "enum": ["gentle", "standard", "strict"]
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Last settings update timestamp"
+        }
+      },
+      "required": ["userId", "safetyLevel"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Private user account profile, accessible only by the owner caretaker"
+    },
+    "/queries/{queryId}": {
+      "schema": "QueryLog",
+      "description": "Child search queries logged for parental oversight and review"
+    },
+    "/settings/{settingId}": {
+      "schema": "CaretakerSettings",
+      "description": "Caretaker configuration and default policies"
+    }
+  }
+}

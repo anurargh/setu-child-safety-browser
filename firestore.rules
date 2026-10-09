@@ -1,0 +1,116 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Default deny catch-all
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Security Helpers
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // Validation helper for User entity
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'authProvider', 'createdAt'])
+        && data.keys().hasOnly(['id', 'name', 'email', 'avatar', 'authProvider', 'parentPin', 'createdAt', 'lastLoginAt'])
+        && data.id is string && data.id.size() <= 128
+        && data.name is string && data.name.size() <= 100
+        && data.email is string && data.email.size() <= 200
+        && data.authProvider in ['email', 'google', 'both']
+        && data.createdAt is string && data.createdAt.size() <= 40
+        && (!('avatar' in data) || (data.avatar is string && data.avatar.size() <= 500))
+        && (!('parentPin' in data) || (data.parentPin is string && data.parentPin.size() <= 10))
+        && (!('lastLoginAt' in data) || (data.lastLoginAt is string && data.lastLoginAt.size() <= 40));
+    }
+
+    // Validation helper for QueryLog entity
+    function isValidQueryLog(data) {
+      return data.keys().hasAll(['id', 'query', 'age', 'status', 'timestamp'])
+        && data.id is string && data.id.size() <= 128
+        && data.query is string && data.query.size() <= 300
+        && data.age is number && data.age >= 3 && data.age <= 18
+        && data.status in ['Allowed', 'Risky', 'Blocked']
+        && data.timestamp is string && data.timestamp.size() <= 40
+        && (!('userId' in data) || (data.userId is string && data.userId.size() <= 128))
+        && (!('userEmail' in data) || (data.userEmail is string && data.userEmail.size() <= 200))
+        && (!('explanation' in data) || (data.explanation is string && data.explanation.size() <= 3000))
+        && (!('searchResultsCount' in data) || (data.searchResultsCount is number))
+        && (!('ipAddress' in data) || (data.ipAddress is string && data.ipAddress.size() <= 64));
+    }
+
+    // Validation helper for CaretakerSettings entity
+    function isValidSettings(data) {
+      return data.keys().hasAll(['userId', 'safetyLevel'])
+        && data.keys().hasOnly(['userId', 'defaultPin', 'safetyLevel', 'updatedAt'])
+        && data.userId is string && data.userId.size() <= 128
+        && data.safetyLevel in ['gentle', 'standard', 'strict']
+        && (!('defaultPin' in data) || (data.defaultPin is string && data.defaultPin.size() <= 10))
+        && (!('updatedAt' in data) || (data.updatedAt is string && data.updatedAt.size() <= 40));
+    }
+
+    // Users collection: Private caretaker accounts
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // Blanket queries forbidden to prevent PII harvesting
+      allow create: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUser(incoming())
+        && incoming().id == userId;
+      allow update: if isOwner(userId)
+        && isValidId(userId)
+        && isValidUser(incoming())
+        && incoming().id == existing().id
+        && incoming().createdAt == existing().createdAt
+        && incoming().diff(existing()).affectedKeys().hasOnly(['name', 'email', 'avatar', 'authProvider', 'parentPin', 'lastLoginAt']);
+      allow delete: if false;
+    }
+
+    // Queries collection: Child search logs for parental review
+    match /queries/{queryId} {
+      allow get: if isSignedIn() && (
+        !('userId' in existing()) || existing().userId == request.auth.uid
+      );
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(queryId)
+        && isValidQueryLog(incoming())
+        && (!('userId' in incoming()) || incoming().userId == request.auth.uid);
+      allow update: if false; // Query logs are append-only audit records
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+
+    // Settings collection: Caretaker preferences
+    match /settings/{settingId} {
+      allow get: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow create: if isValidId(settingId)
+        && isValidSettings(incoming())
+        && incoming().userId == request.auth.uid;
+      allow update: if isSignedIn()
+        && isValidId(settingId)
+        && isValidSettings(incoming())
+        && incoming().userId == existing().userId
+        && existing().userId == request.auth.uid
+        && incoming().diff(existing()).affectedKeys().hasOnly(['defaultPin', 'safetyLevel', 'updatedAt']);
+      allow delete: if isSignedIn() && resource.data.userId == request.auth.uid;
+    }
+  }
+}

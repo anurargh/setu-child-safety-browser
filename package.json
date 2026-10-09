@@ -13,7 +13,8 @@
     "@types/cookie-parser": "^1.4.10",
     "cookie-parser": "^1.4.7",
     "ejs": "^3.1.10",
-    "express": "^4.21.2"
+    "express": "^4.21.2",
+    "firebase": "^13.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.0",
