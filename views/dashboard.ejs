@@ -128,25 +128,19 @@
             <div class="account-card-right">
                 <div class="status-summary-box">
                     <div class="summary-line">
-                        <span>Database & Auth:</span>
-                        <strong class="status-active">🔥 Firebase (Cloud Firestore)</strong>
+                        <span>Database:</span>
+                        <strong class="status-active">Firebase Firestore</strong>
                     </div>
                     <div class="summary-line">
-                        <span>Google Sign-In:</span>
-                        <strong class="<%= isGoogleConfigured ? 'status-active' : 'status-sandbox' %>">
-                            <%= isGoogleConfigured ? '✓ Live OAuth Ready' : '⚡ Sandbox Test Active' %>
-                        </strong>
+                        <span>Authentication:</span>
+                        <strong><%= user && user.authProvider === 'google' ? 'Google Account' : (user && user.authProvider === 'both' ? 'Google & Password' : 'Email & Password') %></strong>
                     </div>
                     <div class="summary-line">
-                        <span>Session Length:</span>
-                        <strong>30 Days (Persistent)</strong>
-                    </div>
-                    <div class="summary-line">
-                        <span>Child Security PIN:</span>
+                        <span>Security PIN:</span>
                         <% if (user && user.parentPin) { %>
-                            <strong class="status-active">Set by Caretaker ✓</strong>
+                            <strong class="status-active">Configured ✓</strong>
                         <% } else { %>
-                            <strong style="color: #c94a29; font-weight: 700;">Not Set (Action Required)</strong>
+                            <strong style="color: #c94a29; font-weight: 700;">Not Configured</strong>
                         <% } %>
                     </div>
                 </div>
@@ -154,16 +148,16 @@
         </section>
 
         <% if (user && !user.parentPin) { %>
-            <div class="sanctuary-notice-pebble" style="background: rgba(224, 122, 95, 0.12); border: 1.5px dashed rgba(224, 122, 95, 0.4); border-radius: 16px; padding: 1.1rem 1.5rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 0.85rem;">
-                    <span style="font-size: 1.6rem;">🔒</span>
+            <div class="sanctuary-notice-pebble" style="background: rgba(84, 122, 93, 0.08); border: 1px solid rgba(84, 122, 93, 0.2); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    <span style="font-size: 1.25rem;">🔒</span>
                     <div>
-                        <strong style="color: #8c3b24; display: block; font-family: 'Fraunces', serif; font-size: 1.05rem;">Set Your Child's Security PIN</strong>
-                        <span style="color: #58675b; font-size: 0.88rem;">Each account sets their own individual PIN for their child. You have not set a PIN yet.</span>
+                        <strong style="color: #243d2c; font-size: 0.95rem;">Security PIN Required</strong>
+                        <span style="color: #58675b; font-size: 0.85rem; display: block;">Configure a PIN to protect parental settings.</span>
                     </div>
                 </div>
-                <a href="#pin-management-card" style="padding: 0.55rem 1.25rem; background: #2f5439; color: #fff; border-radius: 999px; text-decoration: none; font-weight: 600; font-size: 0.86rem;">
-                    Set Child PIN Now →
+                <a href="#pin-management-card" style="padding: 0.5rem 1rem; background: #2f5439; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.84rem;">
+                    Configure PIN →
                 </a>
             </div>
         <% } %>
@@ -305,24 +299,19 @@
 
             <!-- 2. Security PIN Management -->
             <div class="tended-settings-card" id="pin-management-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
-                    <div>
-                        <h3>🔒 Child Security PIN</h3>
-                        <p style="margin: 0;">Each individual account sets their own PIN for their child. Protects parental controls and gate unlock boundaries.</p>
-                    </div>
-                    <% if (user && user.parentPin) { %>
-                        <span class="guide-chip chip-live">✓ Custom PIN Active</span>
-                    <% } else { %>
-                        <span class="guide-chip chip-sandbox" style="background: rgba(224, 122, 95, 0.15); color: #c94a29;">⚠️ PIN Not Set</span>
-                    <% } %>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+                    <h3>Security PIN</h3>
+                    <span class="guide-chip <%= (user && user.parentPin) ? 'chip-live' : 'chip-sandbox' %>">
+                        <%= (user && user.parentPin) ? 'Active' : 'Not Configured' %>
+                    </span>
                 </div>
 
                 <% if (user && user.parentPin) { %>
-                    <div style="background: rgba(84, 122, 93, 0.08); border-radius: 12px; padding: 0.85rem 1.1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
-                        <span style="font-size: 0.92rem; color: #2d3b31;">
-                            Active PIN for this device: <strong id="current-pin-display" style="letter-spacing: 3px; font-family: monospace; font-size: 1.1rem;">••••</strong>
+                    <div style="background: rgba(84, 122, 93, 0.08); border-radius: 10px; padding: 0.75rem 1rem; margin-bottom: 1.25rem; display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;">
+                        <span style="font-size: 0.9rem; color: #2d3b31;">
+                            Current PIN: <strong id="current-pin-display" style="letter-spacing: 3px; font-family: monospace; font-size: 1.05rem;">••••</strong>
                         </span>
-                        <button type="button" class="copy-url-btn" onclick="togglePinVisibility('<%= user.parentPin %>')" id="toggle-pin-btn">Show PIN</button>
+                        <button type="button" class="copy-url-btn" onclick="togglePinVisibility('<%= user.parentPin %>')" id="toggle-pin-btn">Show</button>
                     </div>
                 <% } %>
                 
@@ -330,61 +319,28 @@
                     <div class="tended-form-grid">
                         <% if (user && user.parentPin) { %>
                             <div class="tended-field">
-                                <label for="currentPin">Current 4-Digit PIN:</label>
+                                <label for="currentPin">Current PIN</label>
                                 <input type="password" id="currentPin" name="currentPin" placeholder="••••" required class="tended-input" autocomplete="off">
                             </div>
                         <% } %>
                         <div class="tended-field">
-                            <label for="newPin"><%= (user && user.parentPin) ? 'New 4 to 6 Digit PIN:' : 'Set 4-Digit PIN for Child:' %></label>
+                            <label for="newPin"><%= (user && user.parentPin) ? 'New PIN' : 'Set PIN (4–6 digits)' %></label>
                             <input type="password" id="newPin" name="newPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="••••" required class="tended-input" autocomplete="off">
                         </div>
                     </div>
                     <button type="submit" class="tended-primary-btn" id="save-pin-button">
-                        <%= (user && user.parentPin) ? 'Update Child Security PIN' : 'Save Child Security PIN' %>
+                        <%= (user && user.parentPin) ? 'Update PIN' : 'Save PIN' %>
                     </button>
                 </form>
             </div>
 
-            <!-- 3. Google OAuth 2.0 Production Setup Guide -->
-            <div class="tended-settings-card oauth-guide-card" id="oauth-config-card">
-                <div class="guide-header-badge">
-                    <span class="guide-chip <%= isGoogleConfigured ? 'chip-live' : 'chip-sandbox' %>">
-                        <%= isGoogleConfigured ? '🟢 Live Production Active' : '🟡 Sandbox Mode (Instant Test Ready)' %>
-                    </span>
-                    <h3>Google OAuth 2.0 Integration Status</h3>
-                </div>
-                <p>To connect live Google Sign-In with your personal Google Cloud Console, register your application with these exact callback URLs:</p>
-                
-                <div class="callback-url-box">
-                    <div class="url-row">
-                        <span class="url-label">Development Callback URL:</span>
-                        <code class="url-code" id="dev-url-text"><%= devCallbackUrl %></code>
-                        <button type="button" class="copy-url-btn" onclick="copyText('<%= devCallbackUrl %>')">Copy</button>
-                    </div>
-                    <div class="url-row">
-                        <span class="url-label">Shared / Deployed Callback URL:</span>
-                        <code class="url-code" id="shared-url-text"><%= sharedCallbackUrl %></code>
-                        <button type="button" class="copy-url-btn" onclick="copyText('<%= sharedCallbackUrl %>')">Copy</button>
-                    </div>
-                </div>
-
-                <div class="guide-steps-list">
-                    <strong>📋 Quick 3-Step Setup in Google Cloud Console:</strong>
-                    <ol>
-                        <li>Visit <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener">Google Cloud Console &gt; Credentials</a> and create an <strong>OAuth 2.0 Web Client ID</strong>.</li>
-                        <li>Add the callback URLs above to <strong>Authorized redirect URIs</strong> and the origin to <strong>Authorized JavaScript origins</strong>.</li>
-                        <li>Add <code>GOOGLE_CLIENT_ID</code> and <code>GOOGLE_CLIENT_SECRET</code> to your AI Studio environment variables.</li>
-                    </ol>
-                </div>
-            </div>
-
-            <!-- 4. History Archive & Reset -->
+            <!-- 3. History Archive & Reset -->
             <div class="tended-settings-card" id="data-archive-card">
-                <h3>⚠️ History Archive & Reset</h3>
-                <p>Reset child inquiry records or clear activity history when starting a new supervisory cycle.</p>
+                <h3>Activity History</h3>
+                <p>Clear search logs and activity history.</p>
                 
                 <form method="POST" action="/parent-clear-logs" onsubmit="return confirm('Are you sure you wish to clear all search history logs?');">
-                    <button type="submit" class="tended-danger-btn" id="clear-activity-history-btn">Reset All Activity Logs</button>
+                    <button type="submit" class="tended-danger-btn" id="clear-activity-history-btn">Clear Activity Logs</button>
                 </form>
             </div>
 
@@ -393,24 +349,16 @@
     </main>
 
     <script>
-        function copyText(txt) {
-            navigator.clipboard.writeText(txt).then(function() {
-                alert('Copied callback URL to clipboard: ' + txt);
-            }).catch(function() {
-                prompt('Copy this callback URL:', txt);
-            });
-        }
-
         function togglePinVisibility(actualPin) {
             const display = document.getElementById('current-pin-display');
             const btn = document.getElementById('toggle-pin-btn');
             if (!display || !btn) return;
             if (display.textContent.trim() === '••••') {
                 display.textContent = actualPin;
-                btn.textContent = 'Hide PIN';
+                btn.textContent = 'Hide';
             } else {
                 display.textContent = '••••';
-                btn.textContent = 'Show PIN';
+                btn.textContent = 'Show';
             }
         }
     </script>

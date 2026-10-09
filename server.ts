@@ -570,7 +570,7 @@ app.post("/register", (req: Request, res: Response) => {
   const rawPin = (req.body.parentPin || "").toString().trim();
   if (!rawPin || !/^\d{4,6}$/.test(rawPin)) {
     return res.render("register", {
-      error: "Please set a 4 to 6 digit security PIN for your child's browser protection.",
+      error: "Security PIN must be 4 to 6 digits.",
       info: null,
       formName: name,
       formEmail: email,
@@ -1136,7 +1136,7 @@ app.post("/parent-login", (req: Request, res: Response) => {
 
   if (!targetUser) {
     return res.render("parent-login", {
-      error: "No caretaker account found with that email. Please sign in with Google or Email to configure your child's PIN.",
+      error: "No account found with this email. Please verify your email or register.",
       rememberedUser: null,
       rememberedEmail: inputEmail,
       user: null,
@@ -1146,14 +1146,14 @@ app.post("/parent-login", (req: Request, res: Response) => {
   // Check if target user has a custom PIN configured
   if (!targetUser.parentPin) {
     return res.render("parent-login", {
-      error: `No PIN has been configured for ${targetUser.email} yet. Please sign in with Google or your account password to set your child's PIN.`,
+      error: "No PIN configured for this account. Please sign in with your password or Google to set a PIN.",
       rememberedUser: targetUser,
       rememberedEmail: targetUser.email,
       user: null,
     });
   }
 
-  // Verify custom child PIN against the specific account's PIN
+  // Verify PIN against the specific account's PIN
   if (inputPin === targetUser.parentPin) {
     // Remember email for future unlock convenience
     res.cookie("setu_last_email", targetUser.email, {
@@ -1180,7 +1180,7 @@ app.post("/parent-login", (req: Request, res: Response) => {
     return res.redirect("/dashboard?auth=1");
   } else {
     return res.render("parent-login", {
-      error: "Incorrect PIN. Each account sets their own unique PIN for their child. There is no default PIN.",
+      error: "Incorrect PIN. Please try again.",
       rememberedUser: targetUser,
       rememberedEmail: targetUser.email,
       user: null,
@@ -1270,12 +1270,12 @@ app.post("/parent-change-pin", requireParentAuth, (req: Request, res: Response) 
 
   // Validate new PIN format (numeric 4 to 6 digits)
   if (!newPin || !/^\d{4,6}$/.test(newPin)) {
-    return res.redirect("/dashboard?msg=Error:%20New%20PIN%20must%20be%20between%204%20and%206%20digits.");
+    return res.redirect("/dashboard?msg=Error:%20PIN%20must%20be%20between%204%20and%206%20digits.");
   }
 
   storage.updateUser(user.id, { parentPin: newPin });
 
-  res.redirect("/dashboard?msg=Success:%20Child%20Security%20PIN%20updated%20successfully.");
+  res.redirect("/dashboard?msg=Success:%20Security%20PIN%20updated%20successfully.");
 });
 
 // 17. Set or Update Password (For Google or Normal Users)

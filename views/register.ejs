@@ -95,31 +95,20 @@
                     </div>
                 </div>
 
-                <div class="auth-input-group" style="margin-top: 0.5rem;">
-                    <label for="parentPin" class="auth-label" style="display: flex; justify-content: space-between; align-items: baseline;">
-                        <span>Set Child Security PIN (4 Digits)</span>
-                        <span style="font-size: 0.76rem; color: #58675b; font-weight: 500;">Unique to your family</span>
-                    </label>
-                    <input type="password" id="parentPin" name="parentPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="•••• (e.g., 5821)" required class="auth-input-stone" autocomplete="off">
-                    <small style="display: block; margin-top: 0.35rem; font-size: 0.78rem; color: #58675b; line-height: 1.4;">
-                        🌿 Every account sets their own individual PIN for their child. There is no default PIN. Use this 4-digit code to quickly unlock the caretaker sanctuary on your devices.
-                    </small>
-                </div>
-
-                <div class="auth-benefits-chip">
-                    <span>🛡️</span>
-                    <span>Persistent Account Guarantee: Once registered via Firebase Google or Email, you will never need to create another account again. Your caretaker profile and settings are permanently saved to Firebase Firestore.</span>
+                <div class="auth-input-group">
+                    <label for="parentPin" class="auth-label">Security PIN (4–6 digits)</label>
+                    <input type="password" id="parentPin" name="parentPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="••••" required class="auth-input-stone" autocomplete="off">
                 </div>
 
                 <button type="submit" class="sanctuary-unlock-btn" id="create-account-button">
-                    <span>Create Account & Enter Sanctuary</span>
+                    <span>Create Account</span>
                     <span>→</span>
                 </button>
             </form>
 
             <div class="auth-switch-deck">
-                <p>Already have an account? <a href="/login" class="auth-switch-link">Sign In here</a></p>
-                <p><a href="/parent-login" class="auth-switch-link">Quick 4-Digit PIN Unlock</a> • <a href="/" class="auth-switch-link">Safe Child Garden</a></p>
+                <p>Already have an account? <a href="/login" class="auth-switch-link">Sign In</a></p>
+                <p><a href="/parent-login" class="auth-switch-link">Parent PIN Access</a> • <a href="/" class="auth-switch-link">Return to Search</a></p>
             </div>
 
             <!-- Firebase Status Indicator -->
