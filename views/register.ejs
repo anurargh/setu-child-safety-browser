@@ -96,8 +96,8 @@
                 </div>
 
                 <div class="auth-input-group">
-                    <label for="parentPin" class="auth-label">Security PIN (Optional, 4–6 digits)</label>
-                    <input type="password" id="parentPin" name="parentPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="•••• (leave blank to set later in dashboard)" class="auth-input-stone" autocomplete="off">
+                    <label for="parentPin" class="auth-label">Security PIN (4–6 digits)</label>
+                    <input type="password" id="parentPin" name="parentPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="••••" required class="auth-input-stone" autocomplete="off">
                 </div>
 
                 <button type="submit" class="sanctuary-unlock-btn" id="create-account-button">
@@ -202,7 +202,7 @@
             }
 
             if (event.data && event.data.type === 'OAUTH_AUTH_SUCCESS') {
-                window.location.href = '/dashboard?welcome=google';
+                window.location.href = event.data.redirectUrl || '/dashboard?welcome=google';
             } else if (event.data && event.data.type === 'OAUTH_AUTH_ERROR') {
                 alert('Authentication notice: ' + (event.data.error || 'Unknown error'));
             }

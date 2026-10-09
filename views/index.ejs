@@ -43,32 +43,28 @@
         
         <div class="nav-actions">
             <% if (user) { %>
-                <a href="<%= (user.parentPin && !isPinUnlocked) ? '/parent-login' : '/dashboard' %>" class="user-nav-badge" id="nav-user-profile-badge" title="Tended by <%= user.name %>">
+                <a href="/parent-login" class="user-nav-badge" id="nav-user-profile-badge" title="Caretaker <%= user.name %> (PIN Protected)">
                     <img src="<%= user.avatar %>" alt="<%= user.name %>" class="user-nav-avatar" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Setu';">
                     <div class="user-nav-text">
                         <span class="user-nav-name"><%= user.name %></span>
                         <span class="user-nav-role">Caretaker ✓</span>
                     </div>
                 </a>
-                <% if (user.parentPin && !isPinUnlocked) { %>
-                    <a href="/parent-login" class="parent-lock-link" id="parent-dashboard-link" title="Enter Security PIN to unlock controls">
-                        <span class="lock-glyph">🔒</span>
-                        <span>Parent PIN</span>
-                    </a>
-                <% } else { %>
-                    <a href="/dashboard" class="parent-lock-link" id="parent-dashboard-link" title="Open Sanctuary Dashboard">
-                        <span class="lock-glyph">🌿</span>
-                        <span>Dashboard</span>
-                    </a>
-                <% } %>
+                <a href="/parent-login" class="parent-lock-link" id="parent-dashboard-link" title="Parent Dashboard (Security PIN Required)">
+                    <span class="lock-glyph">🔒</span>
+                    <span>Parent Dashboard</span>
+                </a>
+                <a href="/logout" class="nav-logout-btn" id="nav-logout-link" title="Sign out" style="display:inline-flex; align-items:center; color: #58675b; font-size: 0.85rem; font-weight: 600; text-decoration: none; padding: 6px 14px; border-radius: 9999px; transition: all 0.2s; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06);">
+                    <span>Sign Out</span>
+                </a>
             <% } else { %>
-                <a href="/login" class="nav-signin-link" id="nav-login-link" title="Sign In to Sanctuary">
+                <a href="/login" class="nav-signin-link" id="nav-login-link" title="Sign In">
                     <span>Sign In</span>
                 </a>
                 <a href="/register" class="nav-register-btn" id="nav-register-link" title="Create Free Account">
                     <span>Register</span>
                 </a>
-                <a href="/parent-login" class="parent-lock-link" id="parent-login-link" title="Parental Oversight & Dashboard">
+                <a href="/parent-login" class="parent-lock-link" id="parent-login-link" title="Parent PIN Access">
                     <span class="lock-glyph">🔒</span>
                     <span>Parent PIN</span>
                 </a>

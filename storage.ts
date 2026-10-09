@@ -34,6 +34,7 @@ export interface Session {
   userId: string;
   createdAt: string;
   expiresAt: string;
+  pinUnlocked?: boolean;
 }
 
 export interface QueryLog {
@@ -377,6 +378,28 @@ export function getSessionUser(token: string): User | null {
 export function deleteSession(token: string): void {
   db.sessions = db.sessions.filter((s) => s.token !== token);
   saveDatabase();
+}
+
+export function unlockSessionPin(token: string): void {
+  const session = db.sessions.find((s) => s.token === token);
+  if (session) {
+    session.pinUnlocked = true;
+    saveDatabase();
+  }
+}
+
+export function lockSessionPin(token: string): void {
+  const session = db.sessions.find((s) => s.token === token);
+  if (session) {
+    session.pinUnlocked = false;
+    saveDatabase();
+  }
+}
+
+export function isSessionPinUnlocked(token: string): boolean {
+  if (!token) return false;
+  const session = db.sessions.find((s) => s.token === token);
+  return Boolean(session?.pinUnlocked);
 }
 
 export function deleteAllUserSessions(userId: string): void {

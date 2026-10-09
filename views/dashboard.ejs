@@ -48,17 +48,13 @@
         </div>
 
         <div class="tended-nav-actions">
-            <a href="/" class="dash-open-child-btn" id="open-child-garden-btn">
-                <span>🌱 Open Child Garden</span>
+            <a href="/parent-lock?redirect=/" class="dash-open-child-btn" id="open-child-garden-btn" title="Lock parent controls and switch to child search">
+                <span>🌱 Open Child Garden (Lock)</span>
             </a>
-            <% if (user && user.parentPin) { %>
-                <form method="POST" action="/parent-lock" style="display:inline;">
-                    <button type="submit" class="dash-lock-logout-btn" id="dash-lock-btn" title="Lock controls with PIN" style="background: rgba(84, 122, 93, 0.12); color: #1e3825; border: 1px solid rgba(84, 122, 93, 0.25);">
-                        <span>🔒 Lock Controls</span>
-                    </button>
-                </form>
-            <% } %>
-            <form method="POST" action="/logout" style="display:inline;">
+            <a href="/parent-lock" class="dash-lock-btn" id="dash-lock-btn" title="Lock Parent Dashboard" style="display:inline-flex; align-items:center; gap:0.35rem; padding: 0.55rem 1.1rem; border-radius: 9999px; font-weight: 600; font-size: 0.85rem; color: #203124; background: rgba(84, 122, 93, 0.12); border: 1px solid rgba(84, 122, 93, 0.25); text-decoration: none;">
+                <span>🔒 Lock</span>
+            </a>
+            <form method="POST" action="/logout" style="display:inline; margin: 0;">
                 <button type="submit" class="dash-lock-logout-btn" id="dash-logout-btn">
                     <span>Logout</span>
                 </button>
@@ -316,7 +312,7 @@
                             </div>
                         <% } %>
                         <div class="tended-field">
-                            <label for="newPin"><%= (user && user.parentPin) ? 'New PIN (4–6 digits)' : 'Set PIN (4–6 digits)' %></label>
+                            <label for="newPin"><%= (user && user.parentPin) ? 'New PIN' : 'Set PIN' %></label>
                             <input type="password" id="newPin" name="newPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="••••" required class="tended-input" autocomplete="off">
                         </div>
                     </div>
@@ -326,7 +322,7 @@
                 </form>
 
                 <% if (user && user.parentPin) { %>
-                    <form method="POST" action="/parent-change-pin" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(84, 122, 93, 0.2);" onsubmit="return confirm('Remove security PIN? The dashboard will remain directly accessible without a PIN.');">
+                    <form method="POST" action="/parent-change-pin" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(84, 122, 93, 0.2);" onsubmit="return confirm('Remove security PIN?');">
                         <input type="hidden" name="action" value="remove">
                         <input type="hidden" name="currentPin" value="<%= user.parentPin %>">
                         <button type="submit" class="tended-danger-btn" style="font-size: 0.82rem; padding: 0.45rem 0.9rem;" id="remove-pin-btn">Remove PIN</button>

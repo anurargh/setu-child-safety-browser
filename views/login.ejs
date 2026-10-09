@@ -195,7 +195,7 @@
             }
 
             if (event.data && event.data.type === 'OAUTH_AUTH_SUCCESS') {
-                window.location.href = '/dashboard';
+                window.location.href = event.data.redirectUrl || '/dashboard';
             } else if (event.data && event.data.type === 'OAUTH_AUTH_ERROR') {
                 alert('Authentication notice: ' + (event.data.error || 'Unknown error'));
             }

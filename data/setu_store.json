@@ -24,6 +24,64 @@
       "parentPin": "8429",
       "createdAt": "2026-10-09T13:01:40.950Z",
       "lastLoginAt": "2026-10-09T13:01:40.950Z"
+    },
+    {
+      "id": "usr_1791557579493_548f68f9",
+      "name": "Test Parent",
+      "email": "testparent@example.com",
+      "googleId": "sandbox_google_74657374706172656e74406578616d706c652e636f6d",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=testparent%40example.com&backgroundColor=ebf2ec",
+      "authProvider": "google",
+      "parentPin": "",
+      "createdAt": "2026-10-09T14:52:59.493Z",
+      "lastLoginAt": "2026-10-09T14:52:59.493Z"
+    },
+    {
+      "id": "usr_1791558798053_1cd3e385",
+      "name": "Alice Parent",
+      "email": "alice_test@example.com",
+      "passwordHash": "26712475716fc27859e863dadb0bffbc39af8f225bf6a261e1902dae10ef601f41b33c9f8fb5073f15b1c48bdfdc156727a2424e3ccc3cabbd22ec9c35ef9432",
+      "passwordSalt": "75f00c5e45c3bfa270bea077fbe31830",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=alice_test%40example.com&backgroundColor=ebf2ec",
+      "authProvider": "email",
+      "parentPin": "4321",
+      "createdAt": "2026-10-09T15:13:18.053Z",
+      "lastLoginAt": "2026-10-09T15:13:18.053Z"
+    },
+    {
+      "id": "usr_1791559186973_55414dee",
+      "name": "Bob Guardian",
+      "email": "bob_test@example.com",
+      "passwordHash": "0ac868ac379a27b8e4164e5422d16352faddc455ff7026a2dae0335fe6125847a615c8bda0800ed143f9ccb4add472458d02ea94e591ed39d2cec184e3d60544",
+      "passwordSalt": "43a76bdfd4b1de91201cb4fecc5c11ce",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=bob_test%40example.com&backgroundColor=ebf2ec",
+      "authProvider": "email",
+      "parentPin": "5566",
+      "createdAt": "2026-10-09T15:19:46.973Z",
+      "lastLoginAt": "2026-10-09T15:19:46.973Z"
+    },
+    {
+      "id": "usr_1791559252825_dfcfffb9",
+      "name": "Carol Caregiver",
+      "email": "carol_test@example.com",
+      "passwordHash": "c24cbc7b44226481fca2bddf61d7596b5d4b5aafe48fa5002cbb81ad0aad9d2fa5b6317de9c8e4e4c72f425052cc087934ea58fc1a34234bb6b5e3e98a4c56f8",
+      "passwordSalt": "23ae87da7c126e2f18dbba21efc45569",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=carol_test%40example.com&backgroundColor=ebf2ec",
+      "authProvider": "email",
+      "parentPin": "7788",
+      "createdAt": "2026-10-09T15:20:52.825Z",
+      "lastLoginAt": "2026-10-09T15:20:52.825Z"
+    },
+    {
+      "id": "usr_1791559289661_d3087168",
+      "name": "Google Parent",
+      "email": "newgoogleuser@example.com",
+      "googleId": "sandbox_google_6e6577676f6f676c6575736572406578616d706c652e636f6d",
+      "avatar": "https://api.dicebear.com/7.x/bottts/svg?seed=newgoogleuser%40example.com&backgroundColor=ebf2ec",
+      "authProvider": "google",
+      "parentPin": "2468",
+      "createdAt": "2026-10-09T15:21:29.661Z",
+      "lastLoginAt": "2026-10-09T15:21:29.661Z"
     }
   ],
   "sessions": [
@@ -62,6 +120,39 @@
       "userId": "usr_1791550900950_06050f46",
       "createdAt": "2026-10-09T13:02:04.177Z",
       "expiresAt": "2026-11-08T13:02:04.177Z"
+    },
+    {
+      "token": "fe1f35954fd6189c608a371de3eac8bd510fa4ba73362c0d55ea11177631b8e4",
+      "userId": "usr_1791557579493_548f68f9",
+      "createdAt": "2026-10-09T14:52:59.494Z",
+      "expiresAt": "2026-11-08T14:52:59.494Z"
+    },
+    {
+      "token": "7368f6774fbc943e7df8a7ec269b4f85ff5753666fe781125cda1b44d95b4cb7",
+      "userId": "usr_1791558798053_1cd3e385",
+      "createdAt": "2026-10-09T15:13:18.119Z",
+      "expiresAt": "2026-11-08T15:13:18.119Z"
+    },
+    {
+      "token": "c4d78f6a92cbba3b8ecc6372cf33009c6b6da0f3772b10d95d8e32cd739bdd95",
+      "userId": "usr_1791559186973_55414dee",
+      "createdAt": "2026-10-09T15:19:47.041Z",
+      "expiresAt": "2026-11-08T15:19:47.041Z",
+      "pinUnlocked": true
+    },
+    {
+      "token": "aaf145250ee58b21925ac773dd1bdfa7192682e29ffd3c105b9de7214b9c2137",
+      "userId": "usr_1791559252825_dfcfffb9",
+      "createdAt": "2026-10-09T15:20:52.893Z",
+      "expiresAt": "2026-11-08T15:20:52.893Z",
+      "pinUnlocked": false
+    },
+    {
+      "token": "fb929a216fc838a763d6cf2d205f2e0ab9877ea7a28f8e8c018ec7c61ece1812",
+      "userId": "usr_1791559289661_d3087168",
+      "createdAt": "2026-10-09T15:21:29.662Z",
+      "expiresAt": "2026-11-08T15:21:29.662Z",
+      "pinUnlocked": true
     }
   ],
   "queries": [

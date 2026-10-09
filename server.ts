@@ -66,16 +66,22 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 // Individual Parent PIN Verification & Session Helpers
 function isParentPinUnlocked(req: Request, user: storage.User): boolean {
-  // If the caretaker has NOT set up a PIN, the PIN is non-existent until set up: allow direct access
   if (!user.parentPin) {
-    return true;
+    return false;
+  }
+  // If user is in a session, the session's pinUnlocked state is authoritative!
+  if (req.sessionToken) {
+    return storage.isSessionPinUnlocked(req.sessionToken);
   }
   const pinKey = `setu_pin_unlocked_${user.id}`;
   const isUnlocked = req.signedCookies?.[pinKey] === "1" || req.cookies?.[pinKey] === "1";
   return Boolean(isUnlocked);
 }
 
-function setPinUnlockedCookie(res: Response, userId: string) {
+function setPinUnlockedCookie(res: Response, userId: string, sessionToken?: string) {
+  if (sessionToken) {
+    storage.unlockSessionPin(sessionToken);
+  }
   res.cookie(`setu_pin_unlocked_${userId}`, "1", {
     signed: true,
     httpOnly: true,
@@ -85,7 +91,10 @@ function setPinUnlockedCookie(res: Response, userId: string) {
   });
 }
 
-function clearPinUnlockedCookie(res: Response, userId?: string) {
+function clearPinUnlockedCookie(res: Response, userId?: string, sessionToken?: string) {
+  if (sessionToken) {
+    storage.lockSessionPin(sessionToken);
+  }
   if (userId) {
     res.clearCookie(`setu_pin_unlocked_${userId}`, { sameSite: "none", secure: true });
   }
@@ -95,17 +104,18 @@ function clearPinUnlockedCookie(res: Response, userId?: string) {
 // Authentication Guard for Parent Dashboard
 function requireParentAuth(req: Request, res: Response, next: NextFunction) {
   const user = req.user;
-  if (user) {
-    // If the caretaker has no PIN configured yet, PIN is non-existent until set up: grant direct access
-    if (!user.parentPin) {
-      return next();
-    }
-    // If the caretaker has configured a PIN, verify whether this session has entered it
-    if (isParentPinUnlocked(req, user)) {
-      return next();
-    }
-    // PIN exists and is locked: redirect to enter PIN
-    return res.redirect("/parent-login");
+  if (!user) {
+    return res.redirect("/login");
+  }
+
+  // Ask the user to create a PIN immediately once the account is created
+  if (!user.parentPin) {
+    return res.redirect("/setup-pin?welcome=new");
+  }
+
+  // Protect parent dashboard: children cannot access without the PIN
+  if (isParentPinUnlocked(req, user)) {
+    return next();
   }
 
   return res.redirect("/parent-login");
@@ -447,14 +457,16 @@ function clearSessionCookies(res: Response, userId?: string) {
 app.get("/", (req: Request, res: Response) => {
   const activeTab = (req.query.tab || "all").toString();
   const user = req.user;
-  const isPinUnlocked = user ? isParentPinUnlocked(req, user) : false;
+  if (user) {
+    clearPinUnlockedCookie(res, user.id, req.sessionToken);
+  }
   res.render("index", {
     queryResult: null,
     formQuery: "",
     formAge: 8,
     activeTab,
     user,
-    isPinUnlocked,
+    isPinUnlocked: false,
   });
 });
 
@@ -600,29 +612,25 @@ app.post("/register", (req: Request, res: Response) => {
   }
 
   const rawPin = (req.body.parentPin || "").toString().trim();
-  let userPin = "";
-  if (rawPin) {
-    if (!/^\d{4,6}$/.test(rawPin)) {
-      return res.render("register", {
-        error: "If set, Security PIN must be 4 to 6 digits.",
-        info: null,
-        formName: name,
-        formEmail: email,
-        googleClientId: process.env.GOOGLE_CLIENT_ID || "",
-        appUrl: getBaseAppUrl(req),
-        sharedAppUrl: DEFAULT_SHARED_APP_URL,
-      });
-    }
-    userPin = rawPin;
+  if (!rawPin || !/^\d{4,6}$/.test(rawPin)) {
+    return res.render("register", {
+      error: "Please create a 4 to 6 digit Security PIN.",
+      info: null,
+      formName: name,
+      formEmail: email,
+      googleClientId: process.env.GOOGLE_CLIENT_ID || "",
+      appUrl: getBaseAppUrl(req),
+      sharedAppUrl: DEFAULT_SHARED_APP_URL,
+    });
   }
 
-  // Create new user (PIN remains non-existent until configured)
+  // Create new user with Security PIN immediately configured
   const newUser = storage.createUser({
     name,
     email,
     password,
     authProvider: "email",
-    parentPin: userPin,
+    parentPin: rawPin,
   });
 
   res.cookie("setu_last_email", email, {
@@ -634,10 +642,56 @@ app.post("/register", (req: Request, res: Response) => {
 
   const session = storage.createSession(newUser.id);
   setSessionCookies(res, session.token);
-  if (userPin) {
-    setPinUnlockedCookie(res, newUser.id);
-  }
+  setPinUnlockedCookie(res, newUser.id, session.token);
   return res.redirect("/dashboard?welcome=new");
+});
+
+// 4b. Setup PIN GET (Prompt immediately if account was created without a PIN)
+app.get("/setup-pin", (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.redirect("/login?msg=Please+sign+in+to+create+your+PIN.");
+  }
+  // If user already has a PIN, redirect to dashboard
+  if (req.user.parentPin) {
+    return res.redirect("/dashboard");
+  }
+
+  res.render("setup-pin", {
+    error: null,
+    info: req.query.welcome === "new" ? "Account created! Please create your security PIN to complete setup." : null,
+    user: req.user,
+  });
+});
+
+// 4c. Setup PIN POST
+app.post("/setup-pin", (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.redirect("/login");
+  }
+
+  const pin = (req.body.pin || "").toString().trim();
+  const confirmPin = (req.body.confirmPin || "").toString().trim();
+
+  if (!pin || !/^\d{4,6}$/.test(pin)) {
+    return res.render("setup-pin", {
+      error: "Security PIN must be between 4 and 6 digits (numbers only).",
+      info: null,
+      user: req.user,
+    });
+  }
+
+  if (confirmPin && pin !== confirmPin) {
+    return res.render("setup-pin", {
+      error: "The confirmation PIN does not match. Please re-enter.",
+      info: null,
+      user: req.user,
+    });
+  }
+
+  storage.updateUser(req.user.id, { parentPin: pin });
+  setPinUnlockedCookie(res, req.user.id, req.sessionToken);
+
+  return res.redirect("/dashboard?welcome=pin_created");
 });
 
 // 5. Login GET
@@ -712,11 +766,12 @@ app.post("/login", (req: Request, res: Response) => {
   const session = storage.createSession(user.id);
   setSessionCookies(res, session.token);
 
-  // If a PIN is configured, prompt to verify PIN to access controls
-  // If no PIN is configured, the PIN is non-existent until set up: open dashboard directly
-  if (user.parentPin) {
-    return res.redirect("/parent-login");
+  // If user has not created a PIN yet, prompt them to create one immediately!
+  if (!user.parentPin) {
+    return res.redirect("/setup-pin?welcome=new");
   }
+
+  setPinUnlockedCookie(res, user.id, session.token);
   return res.redirect("/dashboard");
 });
 
@@ -797,7 +852,10 @@ app.post("/api/auth/firebase-login", async (req: Request, res: Response) => {
     const session = storage.createSession(user.id);
     setSessionCookies(res, session.token);
 
-    const redirectUrl = user.parentPin ? "/parent-login" : "/dashboard?welcome=firebase";
+    if (user.parentPin) {
+      setPinUnlockedCookie(res, user.id, session.token);
+    }
+    const redirectUrl = user.parentPin ? "/dashboard?welcome=firebase" : "/setup-pin?welcome=new";
 
     return res.json({
       success: true,
@@ -1028,6 +1086,12 @@ app.get(["/auth/google/callback", "/auth/google/callback/"], async (req: Request
     const session = storage.createSession(user.id);
     setSessionCookies(res, session.token);
 
+    const hasPin = Boolean(user.parentPin);
+    if (hasPin) {
+      setPinUnlockedCookie(res, user.id, session.token);
+    }
+    const targetUrl = hasPin ? "/dashboard" : "/setup-pin?welcome=new";
+
     // Communicate back to opener and close popup
     return res.send(`
       <!DOCTYPE html>
@@ -1040,6 +1104,7 @@ app.get(["/auth/google/callback", "/auth/google/callback/"], async (req: Request
           if (window.opener) {
             window.opener.postMessage({
               type: 'OAUTH_AUTH_SUCCESS',
+              redirectUrl: '${targetUrl}',
               user: {
                 id: '${user.id}',
                 name: '${user.name.replace(/'/g, "\\'")}',
@@ -1048,7 +1113,7 @@ app.get(["/auth/google/callback", "/auth/google/callback/"], async (req: Request
             }, '*');
             window.close();
           } else {
-            window.location.href = '/dashboard';
+            window.location.href = '${targetUrl}';
           }
         </script>
         <h3>Authentication Successful!</h3>
@@ -1113,6 +1178,12 @@ app.post("/api/auth/google/sandbox", (req: Request, res: Response) => {
   const session = storage.createSession(user.id);
   setSessionCookies(res, session.token);
 
+  const hasPin = Boolean(user.parentPin);
+  if (hasPin) {
+    setPinUnlockedCookie(res, user.id, session.token);
+  }
+  const targetUrl = hasPin ? "/dashboard" : "/setup-pin?welcome=new";
+
   return res.send(`
     <!DOCTYPE html>
     <html>
@@ -1122,6 +1193,7 @@ app.post("/api/auth/google/sandbox", (req: Request, res: Response) => {
         if (window.opener) {
           window.opener.postMessage({
             type: 'OAUTH_AUTH_SUCCESS',
+            redirectUrl: '${targetUrl}',
             user: {
               id: '${user.id}',
               name: '${user.name.replace(/'/g, "\\'")}',
@@ -1130,7 +1202,7 @@ app.post("/api/auth/google/sandbox", (req: Request, res: Response) => {
           }, '*');
           window.close();
         } else {
-          window.location.href = '/dashboard';
+          window.location.href = '${targetUrl}';
         }
       </script>
       <h3>Welcome, ${user.name}!</h3>
@@ -1142,22 +1214,18 @@ app.post("/api/auth/google/sandbox", (req: Request, res: Response) => {
 
 // 12. Parent PIN Login GET
 app.get("/parent-login", (req: Request, res: Response) => {
-  const user = req.user;
-  if (user) {
-    // If the caretaker has no PIN configured yet, PIN is non-existent until set up: go directly to dashboard
-    if (!user.parentPin) {
-      return res.redirect("/dashboard");
+  // If user is logged in:
+  if (req.user) {
+    // If no PIN created yet, prompt immediately
+    if (!req.user.parentPin) {
+      return res.redirect("/setup-pin?welcome=new");
     }
-    // If the caretaker has already unlocked the PIN in this session: go to dashboard
-    if (isParentPinUnlocked(req, user)) {
-      return res.redirect("/dashboard");
-    }
-    // Caretaker has a PIN and hasn't unlocked yet: show PIN verification form
+    // Present the PIN verification screen for this active caretaker
     return res.render("parent-login", {
       error: null,
-      user,
-      rememberedUser: user,
-      rememberedEmail: user.email,
+      user: req.user,
+      rememberedUser: req.user,
+      rememberedEmail: req.user.email,
     });
   }
 
@@ -1200,6 +1268,9 @@ app.post("/parent-login", (req: Request, res: Response) => {
 
   // Check if target user has a custom PIN configured
   if (!targetUser.parentPin) {
+    if (req.user) {
+      return res.redirect("/setup-pin?welcome=new");
+    }
     return res.render("parent-login", {
       error: "No PIN configured for this account. Please sign in with your password or Google to set a PIN.",
       rememberedUser: targetUser,
@@ -1219,12 +1290,14 @@ app.post("/parent-login", (req: Request, res: Response) => {
     });
 
     // If user was not already in session, establish session
+    let activeToken = req.sessionToken;
     if (!req.user) {
       const session = storage.createSession(targetUser.id);
       setSessionCookies(res, session.token);
+      activeToken = session.token;
     }
 
-    setPinUnlockedCookie(res, targetUser.id);
+    setPinUnlockedCookie(res, targetUser.id, activeToken);
 
     return res.redirect("/dashboard");
   } else {
@@ -1240,16 +1313,18 @@ app.post("/parent-login", (req: Request, res: Response) => {
 // 14. Lock Controls / Dashboard Lock
 app.post("/parent-lock", (req: Request, res: Response) => {
   if (req.user) {
-    clearPinUnlockedCookie(res, req.user.id);
+    clearPinUnlockedCookie(res, req.user.id, req.sessionToken);
   }
-  res.redirect("/parent-login");
+  const redirectTarget = req.query.redirect === "/" ? "/" : "/parent-login";
+  res.redirect(redirectTarget);
 });
 
 app.get("/parent-lock", (req: Request, res: Response) => {
   if (req.user) {
-    clearPinUnlockedCookie(res, req.user.id);
+    clearPinUnlockedCookie(res, req.user.id, req.sessionToken);
   }
-  res.redirect("/parent-login");
+  const redirectTarget = req.query.redirect === "/" ? "/" : "/parent-login";
+  res.redirect(redirectTarget);
 });
 
 // 14b. Parent Logout
@@ -1326,14 +1401,14 @@ app.post("/parent-change-pin", requireParentAuth, (req: Request, res: Response) 
     return res.redirect("/parent-login");
   }
 
-  // Handle removing PIN so controls return to directly accessible without a PIN
+  // Handle removing PIN
   if (action === "remove") {
     if (user.parentPin && currentPin !== user.parentPin) {
       return res.redirect("/dashboard?msg=Error:%20Current%20PIN%20is%20incorrect.");
     }
     storage.updateUser(user.id, { parentPin: "" });
-    clearPinUnlockedCookie(res, user.id);
-    return res.redirect("/dashboard?msg=Success:%20Security%20PIN%20removed.%20Dashboard%20is%20now%20directly%20accessible.");
+    clearPinUnlockedCookie(res, user.id, req.sessionToken);
+    return res.redirect("/dashboard?msg=Success:%20Security%20PIN%20removed.");
   }
 
   // If user already had a custom PIN configured, verify current PIN
@@ -1349,9 +1424,9 @@ app.post("/parent-change-pin", requireParentAuth, (req: Request, res: Response) 
   }
 
   storage.updateUser(user.id, { parentPin: newPin });
-  setPinUnlockedCookie(res, user.id);
+  setPinUnlockedCookie(res, user.id, req.sessionToken);
 
-  res.redirect("/dashboard?msg=Success:%20Security%20PIN%20saved.%20Parent%20controls%20are%20now%20protected.");
+  res.redirect("/dashboard?msg=Success:%20Security%20PIN%20updated.");
 });
 
 // 17. Set or Update Password (For Google or Normal Users)
