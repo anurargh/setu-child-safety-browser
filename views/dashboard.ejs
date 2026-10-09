@@ -51,9 +51,16 @@
             <a href="/" class="dash-open-child-btn" id="open-child-garden-btn">
                 <span>🌱 Open Child Garden</span>
             </a>
+            <% if (user && user.parentPin) { %>
+                <form method="POST" action="/parent-lock" style="display:inline;">
+                    <button type="submit" class="dash-lock-logout-btn" id="dash-lock-btn" title="Lock controls with PIN" style="background: rgba(84, 122, 93, 0.12); color: #1e3825; border: 1px solid rgba(84, 122, 93, 0.25);">
+                        <span>🔒 Lock Controls</span>
+                    </button>
+                </form>
+            <% } %>
             <form method="POST" action="/logout" style="display:inline;">
                 <button type="submit" class="dash-lock-logout-btn" id="dash-logout-btn">
-                    <span>🔒 Logout & Secure</span>
+                    <span>Logout</span>
                 </button>
             </form>
         </div>
@@ -138,29 +145,14 @@
                     <div class="summary-line">
                         <span>Security PIN:</span>
                         <% if (user && user.parentPin) { %>
-                            <strong class="status-active">Configured ✓</strong>
+                            <strong class="status-active">Active ✓</strong>
                         <% } else { %>
-                            <strong style="color: #c94a29; font-weight: 700;">Not Configured</strong>
+                            <strong style="color: #69786d; font-weight: 600;">Not Set</strong>
                         <% } %>
                     </div>
                 </div>
             </div>
         </section>
-
-        <% if (user && !user.parentPin) { %>
-            <div class="sanctuary-notice-pebble" style="background: rgba(84, 122, 93, 0.08); border: 1px solid rgba(84, 122, 93, 0.2); border-radius: 12px; padding: 1rem 1.25rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 0.75rem;">
-                    <span style="font-size: 1.25rem;">🔒</span>
-                    <div>
-                        <strong style="color: #243d2c; font-size: 0.95rem;">Security PIN Required</strong>
-                        <span style="color: #58675b; font-size: 0.85rem; display: block;">Configure a PIN to protect parental settings.</span>
-                    </div>
-                </div>
-                <a href="#pin-management-card" style="padding: 0.5rem 1rem; background: #2f5439; color: #fff; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 0.84rem;">
-                    Configure PIN →
-                </a>
-            </div>
-        <% } %>
 
         <!-- Metric River-Stones Grid -->
         <section class="tended-metrics-grid" aria-label="Activity Metrics">
@@ -324,7 +316,7 @@
                             </div>
                         <% } %>
                         <div class="tended-field">
-                            <label for="newPin"><%= (user && user.parentPin) ? 'New PIN' : 'Set PIN (4–6 digits)' %></label>
+                            <label for="newPin"><%= (user && user.parentPin) ? 'New PIN (4–6 digits)' : 'Set PIN (4–6 digits)' %></label>
                             <input type="password" id="newPin" name="newPin" pattern="[0-9]{4,6}" inputmode="numeric" maxlength="6" minlength="4" placeholder="••••" required class="tended-input" autocomplete="off">
                         </div>
                     </div>
@@ -332,6 +324,14 @@
                         <%= (user && user.parentPin) ? 'Update PIN' : 'Save PIN' %>
                     </button>
                 </form>
+
+                <% if (user && user.parentPin) { %>
+                    <form method="POST" action="/parent-change-pin" style="margin-top: 1rem; padding-top: 0.75rem; border-top: 1px dashed rgba(84, 122, 93, 0.2);" onsubmit="return confirm('Remove security PIN? The dashboard will remain directly accessible without a PIN.');">
+                        <input type="hidden" name="action" value="remove">
+                        <input type="hidden" name="currentPin" value="<%= user.parentPin %>">
+                        <button type="submit" class="tended-danger-btn" style="font-size: 0.82rem; padding: 0.45rem 0.9rem;" id="remove-pin-btn">Remove PIN</button>
+                    </form>
+                <% } %>
             </div>
 
             <!-- 3. History Archive & Reset -->

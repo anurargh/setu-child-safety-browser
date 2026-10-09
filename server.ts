@@ -64,18 +64,48 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+// Individual Parent PIN Verification & Session Helpers
+function isParentPinUnlocked(req: Request, user: storage.User): boolean {
+  // If the caretaker has NOT set up a PIN, the PIN is non-existent until set up: allow direct access
+  if (!user.parentPin) {
+    return true;
+  }
+  const pinKey = `setu_pin_unlocked_${user.id}`;
+  const isUnlocked = req.signedCookies?.[pinKey] === "1" || req.cookies?.[pinKey] === "1";
+  return Boolean(isUnlocked);
+}
+
+function setPinUnlockedCookie(res: Response, userId: string) {
+  res.cookie(`setu_pin_unlocked_${userId}`, "1", {
+    signed: true,
+    httpOnly: true,
+    sameSite: "none",
+    secure: true,
+    maxAge: 4 * 60 * 60 * 1000, // 4 hours active unlock
+  });
+}
+
+function clearPinUnlockedCookie(res: Response, userId?: string) {
+  if (userId) {
+    res.clearCookie(`setu_pin_unlocked_${userId}`, { sameSite: "none", secure: true });
+  }
+  res.clearCookie("parent_session", { sameSite: "none", secure: true });
+}
+
 // Authentication Guard for Parent Dashboard
 function requireParentAuth(req: Request, res: Response, next: NextFunction) {
-  // If user is logged in with email or Google, they have full caretaker access!
-  if (req.user) {
-    return next();
-  }
-
-  // Fallback for PIN-only legacy unlock
-  const pinSession = req.signedCookies?.parent_session || req.cookies?.parent_session;
-  const authQuery = req.query.auth || req.body?.auth;
-  if (pinSession === "authenticated" || authQuery === "authenticated" || authQuery === "1") {
-    return next();
+  const user = req.user;
+  if (user) {
+    // If the caretaker has no PIN configured yet, PIN is non-existent until set up: grant direct access
+    if (!user.parentPin) {
+      return next();
+    }
+    // If the caretaker has configured a PIN, verify whether this session has entered it
+    if (isParentPinUnlocked(req, user)) {
+      return next();
+    }
+    // PIN exists and is locked: redirect to enter PIN
+    return res.redirect("/parent-login");
   }
 
   return res.redirect("/parent-login");
@@ -399,19 +429,14 @@ function setSessionCookies(res: Response, sessionToken: string) {
     secure: true,
     maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days
   });
-  // Also set parent_session for backwards compatibility
-  res.cookie("parent_session", "authenticated", {
-    signed: true,
-    httpOnly: true,
-    sameSite: "none",
-    secure: true,
-    maxAge: 30 * 24 * 60 * 60 * 1000,
-  });
 }
 
-function clearSessionCookies(res: Response) {
+function clearSessionCookies(res: Response, userId?: string) {
   res.clearCookie("setu_session_token", { sameSite: "none", secure: true });
   res.clearCookie("parent_session", { sameSite: "none", secure: true });
+  if (userId) {
+    res.clearCookie(`setu_pin_unlocked_${userId}`, { sameSite: "none", secure: true });
+  }
 }
 
 // -------------------------------------------------------------
@@ -421,12 +446,15 @@ function clearSessionCookies(res: Response) {
 // 1. Home / Browser Interface
 app.get("/", (req: Request, res: Response) => {
   const activeTab = (req.query.tab || "all").toString();
+  const user = req.user;
+  const isPinUnlocked = user ? isParentPinUnlocked(req, user) : false;
   res.render("index", {
     queryResult: null,
     formQuery: "",
     formAge: 8,
     activeTab,
-    user: req.user,
+    user,
+    isPinUnlocked,
   });
 });
 
@@ -435,6 +463,8 @@ app.post("/search", async (req: Request, res: Response) => {
   const childQuery = (req.body.query || "").toString().trim();
   const childAge = parseInt((req.body.age || "8").toString(), 10) || 8;
   const activeTab = (req.body.tab || "all").toString();
+  const user = req.user;
+  const isPinUnlocked = user ? isParentPinUnlocked(req, user) : false;
 
   if (!childQuery) {
     return res.render("index", {
@@ -447,7 +477,8 @@ app.post("/search", async (req: Request, res: Response) => {
       formQuery: "",
       formAge: childAge,
       activeTab,
-      user: req.user,
+      user,
+      isPinUnlocked,
     });
   }
 
@@ -474,7 +505,8 @@ app.post("/search", async (req: Request, res: Response) => {
     formQuery: childQuery,
     formAge: childAge,
     activeTab,
-    user: req.user,
+    user,
+    isPinUnlocked,
   });
 });
 
@@ -568,25 +600,29 @@ app.post("/register", (req: Request, res: Response) => {
   }
 
   const rawPin = (req.body.parentPin || "").toString().trim();
-  if (!rawPin || !/^\d{4,6}$/.test(rawPin)) {
-    return res.render("register", {
-      error: "Security PIN must be 4 to 6 digits.",
-      info: null,
-      formName: name,
-      formEmail: email,
-      googleClientId: process.env.GOOGLE_CLIENT_ID || "",
-      appUrl: getBaseAppUrl(req),
-      sharedAppUrl: DEFAULT_SHARED_APP_URL,
-    });
+  let userPin = "";
+  if (rawPin) {
+    if (!/^\d{4,6}$/.test(rawPin)) {
+      return res.render("register", {
+        error: "If set, Security PIN must be 4 to 6 digits.",
+        info: null,
+        formName: name,
+        formEmail: email,
+        googleClientId: process.env.GOOGLE_CLIENT_ID || "",
+        appUrl: getBaseAppUrl(req),
+        sharedAppUrl: DEFAULT_SHARED_APP_URL,
+      });
+    }
+    userPin = rawPin;
   }
 
-  // Create new user with their chosen individual child PIN
+  // Create new user (PIN remains non-existent until configured)
   const newUser = storage.createUser({
     name,
     email,
     password,
     authProvider: "email",
-    parentPin: rawPin,
+    parentPin: userPin,
   });
 
   res.cookie("setu_last_email", email, {
@@ -598,6 +634,9 @@ app.post("/register", (req: Request, res: Response) => {
 
   const session = storage.createSession(newUser.id);
   setSessionCookies(res, session.token);
+  if (userPin) {
+    setPinUnlockedCookie(res, newUser.id);
+  }
   return res.redirect("/dashboard?welcome=new");
 });
 
@@ -673,6 +712,11 @@ app.post("/login", (req: Request, res: Response) => {
   const session = storage.createSession(user.id);
   setSessionCookies(res, session.token);
 
+  // If a PIN is configured, prompt to verify PIN to access controls
+  // If no PIN is configured, the PIN is non-existent until set up: open dashboard directly
+  if (user.parentPin) {
+    return res.redirect("/parent-login");
+  }
   return res.redirect("/dashboard");
 });
 
@@ -681,7 +725,7 @@ app.post("/logout", (req: Request, res: Response) => {
   if (req.sessionToken) {
     storage.deleteSession(req.sessionToken);
   }
-  clearSessionCookies(res);
+  clearSessionCookies(res, req.user?.id);
   res.redirect("/login?msg=You+have+been+logged+out+safely.");
 });
 
@@ -689,7 +733,7 @@ app.get("/logout", (req: Request, res: Response) => {
   if (req.sessionToken) {
     storage.deleteSession(req.sessionToken);
   }
-  clearSessionCookies(res);
+  clearSessionCookies(res, req.user?.id);
   res.redirect("/login?msg=You+have+been+logged+out+safely.");
 });
 
@@ -753,9 +797,11 @@ app.post("/api/auth/firebase-login", async (req: Request, res: Response) => {
     const session = storage.createSession(user.id);
     setSessionCookies(res, session.token);
 
+    const redirectUrl = user.parentPin ? "/parent-login" : "/dashboard?welcome=firebase";
+
     return res.json({
       success: true,
-      redirectUrl: "/dashboard?welcome=firebase",
+      redirectUrl,
       user: {
         id: user.id,
         name: user.name,
@@ -1096,14 +1142,23 @@ app.post("/api/auth/google/sandbox", (req: Request, res: Response) => {
 
 // 12. Parent PIN Login GET
 app.get("/parent-login", (req: Request, res: Response) => {
-  // If user is already authenticated with session, redirect straight to dashboard
-  if (req.user) {
-    return res.redirect("/dashboard");
-  }
-
-  const pinSession = req.signedCookies?.parent_session || req.cookies?.parent_session;
-  if (pinSession === "authenticated" || req.query.auth === "1") {
-    return res.redirect("/dashboard?auth=1");
+  const user = req.user;
+  if (user) {
+    // If the caretaker has no PIN configured yet, PIN is non-existent until set up: go directly to dashboard
+    if (!user.parentPin) {
+      return res.redirect("/dashboard");
+    }
+    // If the caretaker has already unlocked the PIN in this session: go to dashboard
+    if (isParentPinUnlocked(req, user)) {
+      return res.redirect("/dashboard");
+    }
+    // Caretaker has a PIN and hasn't unlocked yet: show PIN verification form
+    return res.render("parent-login", {
+      error: null,
+      user,
+      rememberedUser: user,
+      rememberedEmail: user.email,
+    });
   }
 
   const rememberedEmail = (req.query.email || req.cookies?.setu_last_email || "").toString().trim().toLowerCase();
@@ -1149,7 +1204,7 @@ app.post("/parent-login", (req: Request, res: Response) => {
       error: "No PIN configured for this account. Please sign in with your password or Google to set a PIN.",
       rememberedUser: targetUser,
       rememberedEmail: targetUser.email,
-      user: null,
+      user: req.user || null,
     });
   }
 
@@ -1169,31 +1224,40 @@ app.post("/parent-login", (req: Request, res: Response) => {
       setSessionCookies(res, session.token);
     }
 
-    res.cookie("parent_session", "authenticated", {
-      signed: true,
-      httpOnly: true,
-      sameSite: "none",
-      secure: true,
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    setPinUnlockedCookie(res, targetUser.id);
 
-    return res.redirect("/dashboard?auth=1");
+    return res.redirect("/dashboard");
   } else {
     return res.render("parent-login", {
       error: "Incorrect PIN. Please try again.",
       rememberedUser: targetUser,
       rememberedEmail: targetUser.email,
-      user: null,
+      user: req.user || null,
     });
   }
 });
 
-// 14. Parent Logout
+// 14. Lock Controls / Dashboard Lock
+app.post("/parent-lock", (req: Request, res: Response) => {
+  if (req.user) {
+    clearPinUnlockedCookie(res, req.user.id);
+  }
+  res.redirect("/parent-login");
+});
+
+app.get("/parent-lock", (req: Request, res: Response) => {
+  if (req.user) {
+    clearPinUnlockedCookie(res, req.user.id);
+  }
+  res.redirect("/parent-login");
+});
+
+// 14b. Parent Logout
 app.post("/parent-logout", (req: Request, res: Response) => {
   if (req.sessionToken) {
     storage.deleteSession(req.sessionToken);
   }
-  clearSessionCookies(res);
+  clearSessionCookies(res, req.user?.id);
   res.redirect("/");
 });
 
@@ -1255,10 +1319,21 @@ app.get("/dashboard", requireParentAuth, (req: Request, res: Response) => {
 app.post("/parent-change-pin", requireParentAuth, (req: Request, res: Response) => {
   const currentPin = (req.body.currentPin || "").toString().trim();
   const newPin = (req.body.newPin || "").toString().trim();
+  const action = (req.body.action || "").toString().trim();
 
   const user = req.user;
   if (!user) {
     return res.redirect("/parent-login");
+  }
+
+  // Handle removing PIN so controls return to directly accessible without a PIN
+  if (action === "remove") {
+    if (user.parentPin && currentPin !== user.parentPin) {
+      return res.redirect("/dashboard?msg=Error:%20Current%20PIN%20is%20incorrect.");
+    }
+    storage.updateUser(user.id, { parentPin: "" });
+    clearPinUnlockedCookie(res, user.id);
+    return res.redirect("/dashboard?msg=Success:%20Security%20PIN%20removed.%20Dashboard%20is%20now%20directly%20accessible.");
   }
 
   // If user already had a custom PIN configured, verify current PIN
@@ -1274,8 +1349,9 @@ app.post("/parent-change-pin", requireParentAuth, (req: Request, res: Response) 
   }
 
   storage.updateUser(user.id, { parentPin: newPin });
+  setPinUnlockedCookie(res, user.id);
 
-  res.redirect("/dashboard?msg=Success:%20Security%20PIN%20updated%20successfully.");
+  res.redirect("/dashboard?msg=Success:%20Security%20PIN%20saved.%20Parent%20controls%20are%20now%20protected.");
 });
 
 // 17. Set or Update Password (For Google or Normal Users)

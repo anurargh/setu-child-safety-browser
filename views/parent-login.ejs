@@ -57,6 +57,7 @@
             <% } %>
 
             <!-- Quick Google/Email Account Switch Option -->
+            <% if (!user) { %>
             <div class="quick-auth-methods">
                 <a href="/login" class="quick-pill-btn google-pill" id="login-google-link">
                     <svg width="16" height="16" viewBox="0 0 24 24">
@@ -68,6 +69,7 @@
                     <span>Sign In with Password or Google</span>
                 </a>
             </div>
+            <% } %>
 
             <form method="POST" action="/parent-login" class="auth-form" id="pin-login-form">
                 <% if (typeof rememberedUser !== 'undefined' && rememberedUser) { %>
