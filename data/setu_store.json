@@ -157,6 +157,550 @@
   ],
   "queries": [
     {
+      "query": "pornography",
+      "age": 17,
+      "status": "Blocked",
+      "explanation": "This query is blocked because it requests access to sexually explicit content, which is prohibited by safety guidelines regardless of age. Accessing such material can pose risks to personal privacy, mental well-being, and digital security.",
+      "researchCitation": {
+        "title": "Adolescents and Pornography: A Review of 20 Years of Research",
+        "authors": "Peter J, Valkenburg PM",
+        "journal": "The Journal of Sex Research",
+        "year": "2016",
+        "pmid": "27105446",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27105446/",
+        "keyTakeaway": "Extensive developmental research indicates that early exposure to sexually explicit material is linked to distorted perceptions of relationships, gender stereotyping, and reduced emotional well-being in youth.",
+        "quoteSnippet": "Protective digital filtering and parental guidance play a crucial protective role in mitigating the developmental risks associated with premature exposure to online explicit material."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [],
+      "timestamp": "10/11/2026, 3:34:48 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791732888962-270"
+    },
+    {
+      "query": "antidepressants",
+      "age": 17,
+      "status": "Risky",
+      "explanation": "This topic involves sensitive medical information regarding mental health treatments that require professional clinical context. As a 17-year-old, it is important to understand these medications through authoritative medical sources and discuss any concerns with a trusted healthcare provider or guardian.",
+      "researchCitation": {
+        "title": "Clinical Pharmacogenetics Implementation Consortium (CPIC) Guideline for CYP2D6, CYP2C19, CYP2B6, SLC6A4, and HTR2A Genotypes and Serotonin Reuptake Inhibitor Antidepressants.",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Clinical pharmacology and therapeutics",
+        "year": "2023",
+        "pmid": "37032427",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/37032427/",
+        "keyTakeaway": "We provide recommendations for using CYP2D6, CYP2C19, and CYP2B6 genotype results to help inform prescribing these antidepressants and describe the existing data for SLC6A4 and HTR2A, which do not support their clinical use in antidepressant prescribing.",
+        "quoteSnippet": "Serotonin reuptake inhibitor antidepressants, including selective serotonin reuptake inhibitors (SSRIs; i.e., citalopram, escitalopram, fluoxetine, fluvoxamine, paroxetine, and sertraline), serotonin and norepinephrine reuptake inhibitors (..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [],
+      "timestamp": "10/11/2026, 3:33:41 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791732821931-811"
+    },
+    {
+      "query": "antidepressants",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Antidepressants are powerful medicines for adults, and learning about them can be confusing or overwhelming for an eight-year-old. It is best to talk to a trusted adult or a doctor if you have questions about how our brains and bodies work.",
+      "researchCitation": {
+        "title": "Proceedings of the 3rd IPLeiria's International Health Congress : Leiria, Portugal. 6-7 May 2016.",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "BMC health services research",
+        "year": "2016",
+        "pmid": "27409075",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27409075/",
+        "keyTakeaway": "Oliveira, Fernando Moreira P114 The importance of prenatal consultation: Information to pregnant women given on a unit of primary care Ana S.",
+        "quoteSnippet": "S1 Health literacy and health education in adolescence Catarina Cardoso Tom&#xe1;s S2 The effect of a walking program on the quality of life and well-being of people with schizophrenia Emanuel Oliveira, D. Sousa, M. Uba-Chupel, G. Furtado, ..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "how do brains work for kids",
+        "feelings and emotions for kids",
+        "what are medicines for kids"
+      ],
+      "timestamp": "10/11/2026, 3:32:06 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791732726060-174"
+    },
+    {
+      "query": "drugs",
+      "age": 8,
+      "status": "Blocked",
+      "explanation": "This search term is blocked because it relates to topics that can be dangerous or confusing for an 8-year-old. I encourage you to talk to a trusted adult if you have questions about how medicines or substances affect the body.",
+      "researchCitation": {
+        "title": "Drugs for Children.",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Clinical pharmacology and therapeutics",
+        "year": "2017",
+        "pmid": "28510298",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/28510298/",
+        "keyTakeaway": "This is even more important in resource-scarce settings, because of the increasing child population in those regions.",
+        "quoteSnippet": "The \"Therapeutic Orphan\" status of children is gradually improving, but our efforts to eliminate off-label/off-evidence use must be sustained for safer and more effective pediatric drug therapy. This is even more important in resource-scarc..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "how medicine helps our body",
+        "the human immune system for kids",
+        "staying healthy and safe"
+      ],
+      "timestamp": "10/11/2026, 3:30:31 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791732631192-701"
+    },
+    {
+      "query": "antidepressant buy",
+      "age": 15,
+      "status": "Blocked",
+      "explanation": "Attempting to purchase prescription medication like antidepressants online without a doctor's supervision is dangerous and potentially illegal. It is vital to consult with a licensed healthcare professional or a trusted adult if you or someone you know is struggling with mental health.",
+      "researchCitation": {
+        "title": "Cognitive and affective development in adolescence.",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Trends in cognitive sciences",
+        "year": "2005",
+        "pmid": "15668099",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/15668099/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "Questions about the nature of normative and atypical development in adolescence have taken on special significance in the last few years, as scientists have begun to recast old portraits of adolescent behavior in the lig..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [],
+      "timestamp": "10/11/2026, 3:20:50 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791732050018-352"
+    },
+    {
+      "query": "knife",
+      "age": 15,
+      "status": "Risky",
+      "explanation": "Searching for 'knife' is ambiguous and can lead to results ranging from culinary arts to weapon-related violence, which requires careful navigation. At 15, it is important to focus on the historical, technological, or culinary significance of tools rather than potentially harmful content.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "history of ancient stone tools",
+        "culinary knife skills for cooking",
+        "metallurgy and blade manufacturing processes"
+      ],
+      "timestamp": "10/11/2026, 3:20:04 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791732004753-737"
+    },
+    {
+      "query": "how to look more attractive than my friend",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Comparing yourself to friends can lead to negative feelings about your own self-image at a young age. It is much healthier to focus on your own unique personality and the things that make you feel happy and confident.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [],
+      "timestamp": "10/11/2026, 3:18:58 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731938701-248"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Wondering about how you look is completely normal, but searching for beauty advice online can lead to unrealistic standards or unhealthy ideas for young kids. It is best to talk with a parent or trusted adult about healthy habits and feeling confident just the way you are.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "healthy habits for strong growing kids",
+        "how to practice self-confidence and positive thinking",
+        "fun exercises and staying active for kids"
+      ],
+      "timestamp": "10/11/2026, 3:16:48 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731808588-904"
+    },
+    {
+      "query": "how to look more physically attractive than  my friend",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 8-year-old child.",
+      "searchResultsCount": 11,
+      "alternatives": [
+        "how to look more physically attractive than  my friend for kids",
+        "how to look more physically attractive than  my friend facts",
+        "learning how to look more physically attractive than  my friend"
+      ],
+      "timestamp": "10/11/2026, 3:15:14 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731714561-636"
+    },
+    {
+      "query": "how to look more physically attractive than  my friend",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 8-year-old child.",
+      "searchResultsCount": 11,
+      "alternatives": [
+        "how to look more physically attractive than  my friend for kids",
+        "how to look more physically attractive than  my friend facts",
+        "learning how to look more physically attractive than  my friend"
+      ],
+      "timestamp": "10/11/2026, 3:15:14 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731714098-193"
+    },
+    {
+      "query": "how to look more physically attractive tha my friend",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 8-year-old child.",
+      "searchResultsCount": 11,
+      "alternatives": [
+        "how to look more physically attractive tha my friend for kids",
+        "how to look more physically attractive tha my friend facts",
+        "learning how to look more physically attractive tha my friend"
+      ],
+      "timestamp": "10/11/2026, 3:14:59 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731699742-708"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Searching about changing your appearance can lead to websites with unrealistic beauty advice or diets that are not safe for kids. You are wonderful just the way you are, and talking to a parent or trusted adult about how you feel is the best way to get helpful support.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "healthy habits for growing kids",
+        "fun exercises to stay strong and healthy",
+        "how to build self-confidence"
+      ],
+      "timestamp": "10/11/2026, 3:14:20 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731660441-670"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 8-year-old child.",
+      "searchResultsCount": 11,
+      "alternatives": [
+        "how to look better for kids",
+        "how to look better facts",
+        "learning how to look better"
+      ],
+      "timestamp": "10/11/2026, 3:13:57 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731637775-580"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Wondering about how we look is completely normal, but search results for appearance often promote adult beauty standards and diets that are not healthy for an eight-year-old. It is best to talk with a trusted parent or teacher about feeling confident and taking care of your growing body.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "healthy daily habits for kids",
+        "how to build confidence and self esteem",
+        "learning about good hygiene for kids"
+      ],
+      "timestamp": "10/11/2026, 3:13:47 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731627179-859"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Wondering about your appearance is completely normal, but you are already wonderful and unique just the way you are! Because general web searches about looking better often show adult beauty standards or unhealthy advice, this is a great topic to talk through with a parent or trusted adult.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "healthy daily habits for kids",
+        "how to build strong self-esteem",
+        "fun exercises to stay active and strong"
+      ],
+      "timestamp": "10/11/2026, 3:13:17 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731597845-368"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Wondering about how you look is very normal, but online advice about appearance often promotes unrealistic beauty standards or unhealthy habits for young children. It is best to talk with a trusted parent or guardian about feeling confident, staying healthy, and being proud of who you are.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "healthy habits for strong kids",
+        "fun exercises to stay active and healthy",
+        "how to build confidence and self-esteem"
+      ],
+      "timestamp": "10/11/2026, 3:13:16 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731596009-286"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 8-year-old child.",
+      "searchResultsCount": 11,
+      "alternatives": [
+        "how to look better for kids",
+        "how to look better facts",
+        "learning how to look better"
+      ],
+      "timestamp": "10/11/2026, 3:13:12 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731592952-49"
+    },
+    {
+      "query": "how to look better",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Searching for ways to change how you look can lead to websites with adult beauty or dieting advice that are not healthy or safe for kids. You are wonderful just the way you are, and it is best to talk to a trusted parent or teacher about feeling good and staying healthy.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "healthy daily habits for kids",
+        "how to build strong self-confidence",
+        "fun exercises to stay active and strong"
+      ],
+      "timestamp": "10/11/2026, 3:13:06 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791731586671-329"
+    },
+    {
+      "query": "knife",
+      "age": 18,
+      "status": "Allowed",
+      "explanation": "At age 18, exploring knives in the context of culinary arts, outdoor utility, and historical craftsmanship is completely appropriate. Learning about knife types and proper handling reinforces valuable everyday culinary skills and safety practices.",
+      "searchResultsCount": 6,
+      "alternatives": [
+        "culinary knife skills and kitchen safety",
+        "history of knives and metallurgy",
+        "pocket knife care and wood carving basics"
+      ],
+      "timestamp": "10/11/2026, 2:26:15 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728775594-924"
+    },
+    {
+      "query": "knife",
+      "age": 8,
+      "status": "Risky",
+      "explanation": "Knives are sharp tools that can cause serious injury, and searching for them can bring up pictures of dangerous weapons. If you want to learn about cooking utensils or the history of tools, ask a trusted adult to help you explore safely.",
+      "researchCitation": {
+        "title": "[Adolescent psychosocial development].",
+        "authors": "Pediatric Cyber-Safety Research Group",
+        "journal": "Revista chilena de pediatria",
+        "year": "2015",
+        "pmid": "26342392",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/26342392/",
+        "keyTakeaway": "Pediatric and developmental psychology studies emphasize that tailored web filtering combined with scientific evidence helps youth navigate the internet safely.",
+        "quoteSnippet": "It is increasingly necessary that pediatricians have greater knowledge of adolescent health. To begin with they should be familiar with the psychosocial development of this period, an issue which is imperative for the he..."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "Safe cooking tools for kids",
+        "History of ancient stone tools",
+        "Kitchen safety rules for children"
+      ],
+      "timestamp": "10/11/2026, 2:25:26 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728726096-671"
+    },
+    {
+      "query": "knife",
+      "age": 18,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 18-year-old child.",
+      "searchResultsCount": 10,
+      "alternatives": [
+        "knife for kids",
+        "knife facts",
+        "learning knife"
+      ],
+      "timestamp": "10/11/2026, 2:24:48 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728688266-929"
+    },
+    {
+      "query": "Quiet bedtime story audio and nature sounds",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "Looking for soothing bedtime stories and calm nature sounds is a wonderful, healthy way to relax before sleep. This topic is completely safe, peaceful, and perfect for unwinding at the end of the day.",
+      "searchResultsCount": 9,
+      "alternatives": [
+        "Gentle bedtime stories for kids read aloud",
+        "Calm forest and rain sounds for sleep",
+        "Peaceful audiobooks and sleepy tunes for children"
+      ],
+      "timestamp": "10/11/2026, 2:24:09 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728649072-560"
+    },
+    {
+      "query": "Volcano eruptions and magma",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "Learning about volcanoes and magma is a safe, exciting way to explore earth science and nature. It helps curious minds discover how our planet works through geology and earth history.",
+      "searchResultsCount": 9,
+      "alternatives": [
+        "How do volcanoes form for kids",
+        "Difference between magma and lava",
+        "Fun facts about the Ring of Fire"
+      ],
+      "timestamp": "10/11/2026, 2:23:29 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728609112-141"
+    },
+    {
+      "query": "Volcano eruptions and magma",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "Learning about volcanoes and magma is an exciting way to discover how planet Earth works. This topic is completely safe, educational, and great for curious young scientists.",
+      "searchResultsCount": 9,
+      "alternatives": [
+        "How do volcanoes form for kids",
+        "Difference between magma and lava",
+        "Fun volcano science experiments for children"
+      ],
+      "timestamp": "10/11/2026, 2:23:27 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728607512-136"
+    },
+    {
+      "query": "Volcano eruptions and magma",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "Learning about volcanoes and magma is a wonderful and exciting way to explore Earth science. This topic is completely safe, educational, and perfect for curious young explorers.",
+      "searchResultsCount": 9,
+      "alternatives": [
+        "How volcanoes work for kids",
+        "Inside an active volcano diagram",
+        "Fun facts about lava and rocks"
+      ],
+      "timestamp": "10/11/2026, 2:23:26 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728606761-421"
+    },
+    {
+      "query": "Volcano eruptions and magma",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 8-year-old child.",
+      "searchResultsCount": 10,
+      "alternatives": [
+        "Volcano eruptions and magma for kids",
+        "Volcano eruptions and magma facts",
+        "learning Volcano eruptions and magma"
+      ],
+      "timestamp": "10/11/2026, 2:23:25 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791728605817-855"
+    },
+    {
+      "query": "volcanoes",
+      "age": 8,
+      "status": "Allowed",
+      "explanation": "Learning about volcanoes is an exciting and safe way to explore earth science and nature. You can discover how mountains form, why magma erupts into lava, and how our planet works!",
+      "searchResultsCount": 9,
+      "alternatives": [
+        "how do volcanoes erupt for kids",
+        "types of volcanoes for elementary school",
+        "cool facts about magma and lava"
+      ],
+      "timestamp": "10/11/2026, 1:57:37 PM UTC",
+      "ipAddress": "127.0.0.1",
+      "id": "log-1791727057750-292"
+    },
+    {
+      "query": "poppins",
+      "age": 13,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 13-year-old child.",
+      "searchResultsCount": 5,
+      "alternatives": [
+        "poppins for kids",
+        "poppins facts",
+        "learning poppins"
+      ],
+      "timestamp": "10/11/2026, 1:49:49 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1791726589933-600"
+    },
+    {
       "id": "seed-1",
       "query": "dinosaurs facts for school project",
       "age": 9,

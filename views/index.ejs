@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Setu • Safe Discovery Garden for Kids</title>
+    <title>Setu: Safe Internet</title>
+    <meta name="description" content="Child-safe internet search filter and parent monitoring dashboard powered by Gemini.">
+    <meta property="og:title" content="Setu: Safe Internet">
+    <meta property="og:description" content="Child-safe internet search filter and parent monitoring dashboard powered by Gemini.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;0,9..144,800;1,9..144,400;1,9..144,600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -91,8 +94,7 @@
                         </svg>
                         safe.setu.garden
                     </span>
-                    <span class="address-path">/explore<%= formQuery ? '?q=' + encodeURIComponent(formQuery) : '' %></span>
-                    <span class="child-age-pill">Age <%= formAge %></span>
+                    <span class="address-path" id="address-bar-path">/explore<%= formQuery ? '?q=' + encodeURIComponent(formQuery) + (activeTab && activeTab !== 'all' ? '&tab=' + encodeURIComponent(activeTab) : '') : (activeTab && activeTab !== 'all' ? '?tab=' + encodeURIComponent(activeTab) : '') %></span>
                 </div>
                 
                 <button type="button" onclick="location.href='/'" class="refresh-pebble-btn" id="reload-garden-btn" title="Refresh discovery view">
@@ -109,6 +111,7 @@
 
                 <!-- Grand Organic Search Capsule -->
                 <form method="POST" action="/search" class="search-form-capsule" id="child-search-form">
+                    <input type="hidden" id="tab-input" name="tab" value="<%= (typeof activeTab !== 'undefined' && activeTab) ? activeTab : 'all' %>">
                     <div class="search-capsule-body">
                         <span class="search-lens-icon">
                             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
@@ -118,13 +121,13 @@
                         </span>
                         
                         <input type="text" id="query" name="query" class="child-search-field" 
-                               placeholder="Search dinosaurs, volcanoes, planets, coral reefs, coding puzzles..." 
-                               value="<%= formQuery || '' %>" required autocomplete="off" autofocus>
+                                placeholder="Search dinosaurs, volcanoes, planets, coral reefs, coding puzzles..." 
+                                value="<%= formQuery || '' %>" required autocomplete="off" autofocus>
                         
                         <div class="age-pebble-control">
                             <label for="age" class="age-pebble-label">Age</label>
-                            <select id="age" name="age" class="age-pebble-dropdown">
-                                <% [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18].forEach(function(a) { %>
+                            <select id="age" name="age" class="age-pebble-dropdown" onchange="handleAgeChange(this.value)">
+                                <% [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17].forEach(function(a) { %>
                                     <option value="<%= a %>" <%= (formAge == a) ? 'selected' : '' %>><%= a %> yrs</option>
                                 <% }); %>
                             </select>
@@ -137,26 +140,64 @@
                     </div>
                 </form>
 
-                <!-- Quick Wonder Topic Pebbles -->
-                <div class="quick-curiosities">
-                    <span class="curiosity-prompt">Gentle Topics:</span>
-                    <a href="javascript:void(0)" onclick="quickSearch('Dinosaur fossils and T-Rex facts')" class="curiosity-pebble">🦖 Dinosaurs</a>
-                    <a href="javascript:void(0)" onclick="quickSearch('Volcano eruptions and magma')" class="curiosity-pebble">🌋 Volcanoes</a>
-                    <a href="javascript:void(0)" onclick="quickSearch('Solar system planets and moons')" class="curiosity-pebble">🪐 Solar System</a>
-                    <a href="javascript:void(0)" onclick="quickSearch('Coral reef marine life animals')" class="curiosity-pebble">🐬 Ocean Life</a>
-                    <a href="javascript:void(0)" onclick="quickSearch('Fun coding games for kids')" class="curiosity-pebble">💻 Coding Puzzles</a>
+                <!-- Quick Wonder Topic Pebbles (Tailored by Age Maturity) -->
+                <div class="quick-curiosities" id="quick-curiosities">
+                    <span class="curiosity-prompt" id="curiosity-prompt-label">
+                        <%= (formAge >= 14) ? 'Research Topics:' : (formAge >= 11) ? 'Inquiry Topics:' : 'Gentle Topics:' %>
+                    </span>
+                    <div id="quick-curiosities-wrap" style="display: contents;">
+                        <% if (formAge >= 14) { %>
+                            <a href="javascript:void(0)" onclick="quickSearch('James Webb space telescope discoveries astrophysics')" class="curiosity-pebble" data-tab-category="visual">🌌 Astrophysics</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('CRISPR gene editing genetics research')" class="curiosity-pebble" data-tab-category="educational">🧬 CRISPR & Genetics</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('World history ancient civilizations archaeology')" class="curiosity-pebble" data-tab-category="educational">🏛️ World History</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Quantum physics atomic theory simulations')" class="curiosity-pebble" data-tab-category="visual">⚛️ Quantum Physics</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Computer science algorithms machine learning fundamentals')" class="curiosity-pebble" data-tab-category="educational">💻 Algorithms & AI</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Human brain neuroscience memory cognitive science')" class="curiosity-pebble" data-tab-category="media">🎙️ Neuroscience</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('3D interactive human body anatomy organ systems')" class="curiosity-pebble" data-tab-category="visual">🎨 3D Anatomy</a>
+                        <% } else if (formAge >= 11) { %>
+                            <a href="javascript:void(0)" onclick="quickSearch('Mars Perseverance rover space probe discoveries')" class="curiosity-pebble" data-tab-category="visual">🚀 Mars Rovers</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Ancient Roman and Egyptian civilizations history')" class="curiosity-pebble" data-tab-category="educational">🏛️ Ancient Civilizations</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Deep ocean trench creatures marine biology')" class="curiosity-pebble" data-tab-category="educational">🐬 Marine Biology</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Python coding interactive beginner projects')" class="curiosity-pebble" data-tab-category="educational">🐍 Python Coding</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Roller coaster physics kinetic energy simulations')" class="curiosity-pebble" data-tab-category="visual">🎢 Physics Simulations</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Smash Boom Best smart science debates')" class="curiosity-pebble" data-tab-category="media">🎧 Smart Debates</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Light lenses and optical illusions Exploratorium')" class="curiosity-pebble" data-tab-category="visual">🎨 Optics Lab</a>
+                        <% } else if (formAge >= 8) { %>
+                            <a href="javascript:void(0)" onclick="quickSearch('Dinosaur fossils and T-Rex facts')" class="curiosity-pebble" data-tab-category="educational">🦖 Dinosaurs</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Volcano eruptions and magma')" class="curiosity-pebble" data-tab-category="visual">🌋 Volcanoes</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Solar system planets and moons')" class="curiosity-pebble" data-tab-category="visual">🪐 Solar System</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Coral reef marine life animals')" class="curiosity-pebble" data-tab-category="educational">🐬 Ocean Life</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Fun coding puzzles for kids')" class="curiosity-pebble" data-tab-category="educational">💻 Coding Puzzles</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Brains On science audio podcast mysteries')" class="curiosity-pebble" data-tab-category="media">🎧 Brains On! Science</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('DK FindOut 3D models animals and nature')" class="curiosity-pebble" data-tab-category="visual">🎨 3D Models</a>
+                        <% } else { %>
+                            <a href="javascript:void(0)" onclick="quickSearch('Friendly dinosaur pictures and facts')" class="curiosity-pebble" data-tab-category="educational">🦖 Dinosaurs</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Gentle volcano pictures and earth facts')" class="curiosity-pebble" data-tab-category="visual">🌋 Volcanoes</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Planets stars and moon for young kids')" class="curiosity-pebble" data-tab-category="visual">🪐 Planets & Stars</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Dolphins whales and sea turtles facts')" class="curiosity-pebble" data-tab-category="educational">🐬 Ocean Animals</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Fun coding games for kids')" class="curiosity-pebble" data-tab-category="educational">💻 Coding Games</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('Quiet bedtime story audio and nature sounds')" class="curiosity-pebble" data-tab-category="media">🎧 Bedtime Stories</a>
+                            <a href="javascript:void(0)" onclick="quickSearch('San Diego Zoo baby animals webcams')" class="curiosity-pebble" data-tab-category="visual">🎨 Zoo Baby Animals</a>
+                        <% } %>
+                    </div>
                 </div>
             </section>
 
-            <!-- Topic Category Filter Tabs -->
-            <% if (queryResult) { %>
+            <!-- Topic Category Filter Tabs (Always Interactive) -->
             <nav class="garden-tabs-nav" aria-label="Search Filter Categories">
-                <button type="button" class="garden-tab active">🌿 All Discoveries</button>
-                <button type="button" class="garden-tab">📚 Educational Sites</button>
-                <button type="button" class="garden-tab">🎨 Visual Explorations</button>
-                <button type="button" class="garden-tab">🎧 Safe Quiet Media</button>
+                <button type="button" class="garden-tab <%= (!activeTab || activeTab === 'all') ? 'active' : '' %>" id="tab-btn-all" onclick="selectGardenTab('all', true)">
+                    <span>🌿 All Discoveries</span>
+                </button>
+                <button type="button" class="garden-tab <%= activeTab === 'educational' ? 'active' : '' %>" id="tab-btn-educational" onclick="selectGardenTab('educational', true)">
+                    <span>📚 Educational Sites</span>
+                </button>
+                <button type="button" class="garden-tab <%= activeTab === 'visual' ? 'active' : '' %>" id="tab-btn-visual" onclick="selectGardenTab('visual', true)">
+                    <span>🎨 Visual Explorations</span>
+                </button>
+                <button type="button" class="garden-tab <%= activeTab === 'media' ? 'active' : '' %>" id="tab-btn-media" onclick="selectGardenTab('media', true)">
+                    <span>🎧 Safe Quiet Media</span>
+                </button>
             </nav>
-            <% } %>
 
             <!-- Browser Garden Content / Results / Protection -->
             <div class="browser-garden-content">
@@ -165,7 +206,16 @@
                     <div class="welcome-garden-card" id="empty-state-garden">
                         <div class="welcome-crest">🌱✨</div>
                         <h3>The Discovery Garden is Open</h3>
-                        <p>Type a topic above to begin exploring. Sensitive or inappropriate material is automatically replaced with gentle guidance and developmental research citations.</p>
+                        <p>Type a topic above to begin exploring, or pick a category tab above to see curated safe portals. Sensitive or inappropriate material is automatically replaced with gentle guidance and developmental research citations.</p>
+                    </div>
+
+                    <!-- Category Spotlight for Empty State when a tab is clicked -->
+                    <div id="category-welcome-spotlight" style="margin-top: 2rem;">
+                        <div class="results-tally-bar" style="margin-bottom: 1.25rem;">
+                            <span id="spotlight-header" style="font-weight: 700;">Featured Category Destinations</span>
+                            <span class="verified-stamp">✓ Verified Safe by Setu</span>
+                        </div>
+                        <div class="organic-results-deck" id="spotlight-cards-deck"></div>
                     </div>
                 <% } else { %>
                     
@@ -190,13 +240,25 @@
                     <!-- 1. ALLOWED DISCOVERY STATE -->
                     <% if (queryResult.status === 'Allowed') { %>
                         <div class="results-tally-bar">
-                            <span>Found <%= queryResult.searchResults.length %> verified safe learning destinations</span>
+                            <span id="results-tally-count">Found <%= queryResult.searchResults.length %> verified safe learning destinations</span>
                             <span class="verified-stamp">✓ Setu Safety Grade A+</span>
                         </div>
 
-                        <div class="organic-results-deck">
-                            <% queryResult.searchResults.forEach(function(item, idx) { %>
-                                <article class="discovery-card" id="result-card-<%= idx %>">
+                        <div class="organic-results-deck" id="results-deck">
+                            <% queryResult.searchResults.forEach(function(item, idx) { 
+                                var cardCat = (item.tabCategory || '').toLowerCase();
+                                if (!cardCat) {
+                                    var rawC = (item.category || item.title || '').toLowerCase();
+                                    if (rawC.includes('visual') || rawC.includes('3d') || rawC.includes('gallery') || rawC.includes('diagram') || rawC.includes('photo')) {
+                                        cardCat = 'visual';
+                                    } else if (rawC.includes('media') || rawC.includes('video') || rawC.includes('audio') || rawC.includes('story') || rawC.includes('podcast') || rawC.includes('clip')) {
+                                        cardCat = 'media';
+                                    } else {
+                                        cardCat = 'educational';
+                                    }
+                                }
+                            %>
+                                <article class="discovery-card" id="result-card-<%= idx %>" data-tab-category="<%= cardCat %>">
                                     <div class="card-top-row">
                                         <span class="domain-leaf">🌐 <%= item.domain %></span>
                                         <span class="category-pebble"><%= item.category %></span>
@@ -214,6 +276,15 @@
                                     </div>
                                 </article>
                             <% }); %>
+                        </div>
+
+                        <!-- Category Safe Supplement Deck when filtering finds 0 direct matches -->
+                        <div id="results-fallback-deck" style="display: none; margin-top: 1.5rem;">
+                            <div class="results-tally-bar" style="margin-bottom: 1.25rem;">
+                                <span id="results-fallback-header" style="font-weight: 700;">Curated Safe Destinations for This Category</span>
+                                <span class="verified-stamp">✓ Verified Safe by Setu</span>
+                            </div>
+                            <div class="organic-results-deck" id="results-fallback-cards"></div>
                         </div>
 
                         <!-- Safe Exploration Alternatives -->
@@ -320,6 +391,939 @@
             document.getElementById('query').value = topic;
             document.getElementById('child-search-form').submit();
         }
+
+        const SPOTLIGHT_BY_TIER = {
+            teens: {
+                all: [
+                    {
+                        title: "Encyclopedia Britannica Academic & Secondary Overview",
+                        url: "https://www.britannica.com",
+                        domain: "britannica.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Academic Grade",
+                        snippet: "Scholarly research articles, historical context, peer-reviewed biographies, and global analysis for secondary research."
+                    },
+                    {
+                        title: "Khan Academy High School & AP Preparation Modules",
+                        url: "https://www.khanacademy.org",
+                        domain: "khanacademy.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Curriculum Standard",
+                        snippet: "High-yield video lessons, interactive problem sets, and concept breakdowns in AP calculus, chemistry, physics, and world history."
+                    },
+                    {
+                        title: "NASA Science Mission Directorate & Cosmic Archives",
+                        url: "https://science.nasa.gov",
+                        domain: "science.nasa.gov",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Space Research",
+                        snippet: "Direct astrophysics telemetry, James Webb Deep Field infrared imagery, exoplanet databases, and planetary science papers."
+                    },
+                    {
+                        title: "Google Arts & Culture High-Definition Virtual Exhibits",
+                        url: "https://artsandculture.google.com",
+                        domain: "artsandculture.google.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Virtual Archive",
+                        snippet: "Gigapixel museum scans, 3D historical artifacts, architectural walkthroughs, and verified archival manuscripts from 2,000+ world institutions."
+                    },
+                    {
+                        title: "TED-Ed & TED Talks Curated Educational Lectures",
+                        url: "https://ed.ted.com",
+                        domain: "ed.ted.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Curated Lectures",
+                        snippet: "Rigorous animated academic explanations and thought-provoking lectures by scientists, historians, and authors dissecting core questions."
+                    },
+                    {
+                        title: "CrashCourse High School Learning Curriculum",
+                        url: "https://thecrashcourse.com",
+                        domain: "thecrashcourse.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Educator Reviewed",
+                        snippet: "Mastery video series created by educators covering European history, organic chemistry, psychology, computer science, and ecology."
+                    }
+                ],
+                educational: [
+                    {
+                        title: "Encyclopedia Britannica Academic & Secondary Overview",
+                        url: "https://www.britannica.com",
+                        domain: "britannica.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Academic Grade",
+                        snippet: "Scholarly research articles, historical context, peer-reviewed biographies, and global analysis for secondary research."
+                    },
+                    {
+                        title: "Khan Academy High School & AP Preparation Modules",
+                        url: "https://www.khanacademy.org",
+                        domain: "khanacademy.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Curriculum Standard",
+                        snippet: "High-yield video lessons, interactive problem sets, and concept breakdowns in AP calculus, chemistry, physics, and world history."
+                    },
+                    {
+                        title: "National Geographic Education Secondary Resource Library",
+                        url: "https://education.nationalgeographic.org",
+                        domain: "education.nationalgeographic.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Verified Reference",
+                        snippet: "Authoritative earth science, environmental systems, physical anthropology, and cartography resources for high school students."
+                    },
+                    {
+                        title: "Scientific American & Nature Research Briefings",
+                        url: "https://www.scientificamerican.com",
+                        domain: "scientificamerican.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Science Verified",
+                        snippet: "Award-winning science journalism, breakdowns of peer-reviewed research papers, and cutting-edge discoveries in biotechnology and physics."
+                    }
+                ],
+                visual: [
+                    {
+                        title: "NASA Science Mission Directorate & Cosmic Archives",
+                        url: "https://science.nasa.gov",
+                        domain: "science.nasa.gov",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Space Research",
+                        snippet: "Direct astrophysics telemetry, James Webb Deep Field infrared imagery, exoplanet databases, and planetary science papers."
+                    },
+                    {
+                        title: "Google Arts & Culture High-Definition Virtual Exhibits",
+                        url: "https://artsandculture.google.com",
+                        domain: "artsandculture.google.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Virtual Archive",
+                        snippet: "Gigapixel museum scans, 3D historical artifacts, architectural walkthroughs, and verified archival manuscripts from 2,000+ world institutions."
+                    },
+                    {
+                        title: "PhET Interactive STEM Laboratory Simulations",
+                        url: "https://phet.colorado.edu",
+                        domain: "phet.colorado.edu",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive STEM",
+                        snippet: "University of Colorado interactive STEM simulations: wave mechanics, molecular polarity, quantum mechanics, and circuit physics."
+                    },
+                    {
+                        title: "BioDigital Human Interactive 3D Anatomy & Physiology",
+                        url: "https://human.biodigital.com",
+                        domain: "human.biodigital.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "3D Biomedical",
+                        snippet: "Medical-grade 3D interactive models of human anatomy, cardiovascular systems, neurobiology, and cellular mechanisms."
+                    }
+                ],
+                media: [
+                    {
+                        title: "TED-Ed & TED Talks Curated Educational Lectures",
+                        url: "https://ed.ted.com",
+                        domain: "ed.ted.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Curated Lectures",
+                        snippet: "Rigorous animated academic explanations and thought-provoking lectures by scientists, historians, and authors dissecting core questions."
+                    },
+                    {
+                        title: "CrashCourse High School Learning Curriculum",
+                        url: "https://thecrashcourse.com",
+                        domain: "thecrashcourse.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Educator Reviewed",
+                        snippet: "Mastery video series created by educators covering European history, organic chemistry, psychology, computer science, and ecology."
+                    },
+                    {
+                        title: "Science Friday & NPR Radiolab In-Depth Audio Investigations",
+                        url: "https://www.sciencefriday.com",
+                        domain: "sciencefriday.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Public Radio Science",
+                        snippet: "Interviews with active field researchers, Nobel laureates, and field biologists exploring cutting-edge discoveries."
+                    },
+                    {
+                        title: "PBS NOVA Science Documentaries & Deep-Dives",
+                        url: "https://www.pbs.org/wgbh/nova",
+                        domain: "pbs.org/wgbh/nova",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Documentary Grade",
+                        snippet: "Award-winning in-depth investigative science documentaries on quantum computing, black holes, human origins, and climate science."
+                    }
+                ]
+            },
+            middle: {
+                all: [
+                    {
+                        title: "Britannica School Middle Edition Reference",
+                        url: "https://www.britannica.com",
+                        domain: "britannica.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Middle School Standard",
+                        snippet: "Structured encyclopedia overview with verified timelines, interactive maps, and homework-ready study guides for middle learners."
+                    },
+                    {
+                        title: "Khan Academy Middle School Mathematics & Science",
+                        url: "https://www.khanacademy.org",
+                        domain: "khanacademy.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Curriculum Standard",
+                        snippet: "Practice modules and clear video lessons for pre-algebra, earth systems, physics, and world civilizations."
+                    },
+                    {
+                        title: "NASA Image & Planetary Flyby Library",
+                        url: "https://images.nasa.gov",
+                        domain: "images.nasa.gov",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Space Imagery",
+                        snippet: "Browse real high-resolution imagery from Mars rovers, orbital telescopes, the International Space Station, and deep nebulas."
+                    },
+                    {
+                        title: "Exploratorium Interactive Digital Science Exhibits",
+                        url: "https://www.exploratorium.edu",
+                        domain: "exploratorium.edu",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive Lab",
+                        snippet: "Hands-on physics, optics, biology, sound waves, and visual perception interactive web exhibits."
+                    },
+                    {
+                        title: "TED-Ed Student Lessons & Curiosity Animations",
+                        url: "https://ed.ted.com",
+                        domain: "ed.ted.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Student Animation",
+                        snippet: "Engaging 5-minute animations exploring riddles, historical discoveries, animal superpowers, and nature mysteries."
+                    },
+                    {
+                        title: "Smash Boom Best & Brains On! Smart Fact-Based Debates",
+                        url: "https://www.smashboom.org",
+                        domain: "smashboom.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Critical Thinking Audio",
+                        snippet: "Lively, respectful audio debates teaching students how to weigh evidence, build logical arguments, and evaluate claims."
+                    }
+                ],
+                educational: [
+                    {
+                        title: "Britannica School Middle Edition Reference",
+                        url: "https://www.britannica.com",
+                        domain: "britannica.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Middle School Standard",
+                        snippet: "Structured encyclopedia overview with verified timelines, interactive maps, and homework-ready study guides for middle learners."
+                    },
+                    {
+                        title: "Khan Academy Middle School Mathematics & Science",
+                        url: "https://www.khanacademy.org",
+                        domain: "khanacademy.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Curriculum Standard",
+                        snippet: "Practice modules and clear video lessons for pre-algebra, earth systems, physics, and world civilizations."
+                    },
+                    {
+                        title: "Science News Explores - Real Research for Students",
+                        url: "https://www.snexplores.org",
+                        domain: "snexplores.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Science Verified",
+                        snippet: "Award-winning science news for students explaining recent discoveries and hands-on experiments."
+                    },
+                    {
+                        title: "Smithsonian Learning Lab Student Hub",
+                        url: "https://learninglab.si.edu",
+                        domain: "learninglab.si.edu",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Museum Archive",
+                        snippet: "Millions of authentic museum specimens, historical primary sources, and interactive inquiry collections."
+                    }
+                ],
+                visual: [
+                    {
+                        title: "NASA Image & Planetary Flyby Library",
+                        url: "https://images.nasa.gov",
+                        domain: "images.nasa.gov",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Space Imagery",
+                        snippet: "Browse real high-resolution imagery from Mars rovers, orbital telescopes, the International Space Station, and deep nebulas."
+                    },
+                    {
+                        title: "Exploratorium Interactive Digital Science Exhibits",
+                        url: "https://www.exploratorium.edu",
+                        domain: "exploratorium.edu",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive Lab",
+                        snippet: "Hands-on physics, optics, biology, sound waves, and visual perception interactive web exhibits."
+                    },
+                    {
+                        title: "Google Arts & Culture Virtual Museum Galleries",
+                        url: "https://artsandculture.google.com",
+                        domain: "artsandculture.google.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "High-Res Art",
+                        snippet: "High-resolution museum artifacts, world heritage 360° panoramas, and cultural history collections."
+                    },
+                    {
+                        title: "PhET Interactive Science & Math Simulations",
+                        url: "https://phet.colorado.edu",
+                        domain: "phet.colorado.edu",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive STEM",
+                        snippet: "Engaging STEM simulations exploring fractions, energy skate parks, gravity, and circuit building."
+                    }
+                ],
+                media: [
+                    {
+                        title: "TED-Ed Student Lessons & Curiosity Animations",
+                        url: "https://ed.ted.com",
+                        domain: "ed.ted.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Student Animation",
+                        snippet: "Engaging 5-minute animations exploring riddles, historical discoveries, animal superpowers, and nature mysteries."
+                    },
+                    {
+                        title: "CrashCourse Student Learning Curriculum",
+                        url: "https://thecrashcourse.com",
+                        domain: "thecrashcourse.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Educator Reviewed",
+                        snippet: "Educator-crafted animated breakdowns of world history, biology, chemistry, and literature."
+                    },
+                    {
+                        title: "Smash Boom Best & Brains On! Smart Fact-Based Debates",
+                        url: "https://www.smashboom.org",
+                        domain: "smashboom.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Critical Thinking Audio",
+                        snippet: "Lively, respectful audio debates teaching students how to weigh evidence, build logical arguments, and evaluate claims."
+                    },
+                    {
+                        title: "Science Friday Student Science Investigations",
+                        url: "https://www.sciencefriday.com",
+                        domain: "sciencefriday.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Science Audio",
+                        snippet: "Conversations with field scientists, marine biologists, and inventors explaining real-world phenomena."
+                    }
+                ]
+            },
+            upper_elem: {
+                all: [
+                    {
+                        title: "National Geographic Kids - Animal & Nature Hub",
+                        url: "https://kids.nationalgeographic.com",
+                        domain: "kids.nationalgeographic.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Science Verified",
+                        snippet: "Fascinating wildlife facts, world geography, earth science experiments, and interactive discovery quizzes."
+                    },
+                    {
+                        title: "Britannica Kids Student Edition",
+                        url: "https://kids.britannica.com/students",
+                        domain: "kids.britannica.com/students",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Student Verified",
+                        snippet: "Clear, age-tailored reference articles, interactive timelines, and homework-safe knowledge guides verified by educators."
+                    },
+                    {
+                        title: "DK FindOut! - 3D Visual Models & Illustrated Guides",
+                        url: "https://www.dkfindout.com",
+                        domain: "dkfindout.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive 3D",
+                        snippet: "Interact with 3D models of dinosaurs, spacecraft, ancient castles, volcanoes, and anatomical wonders with visual diagrams."
+                    },
+                    {
+                        title: "NASA Image & Video Library for Students",
+                        url: "https://images.nasa.gov",
+                        domain: "images.nasa.gov",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Space Imagery",
+                        snippet: "Browse real high-resolution photographs from rovers, space probes, and orbiting telescopes depicting planets and galaxies."
+                    },
+                    {
+                        title: "Brains On! - Calm Science Audio Podcast for Curious Kids",
+                        url: "https://www.brainson.org",
+                        domain: "brainson.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Quiet Podcast",
+                        snippet: "Soothing audio episodes answering kid-submitted science questions with gentle soundscapes and friendly hosts."
+                    },
+                    {
+                        title: "Smash Boom Best - Friendly Fact-Based Debate Audio",
+                        url: "https://www.smashboom.org",
+                        domain: "smashboom.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Calm Audio",
+                        snippet: "Fun and gentle debate show where kids learn how to defend their opinions with facts (Lava vs. Quick Sand, Cats vs. Dogs)."
+                    }
+                ],
+                educational: [
+                    {
+                        title: "National Geographic Kids - Animal & Nature Hub",
+                        url: "https://kids.nationalgeographic.com",
+                        domain: "kids.nationalgeographic.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Science Verified",
+                        snippet: "Fascinating wildlife facts, world geography, earth science experiments, and interactive discovery quizzes."
+                    },
+                    {
+                        title: "Britannica Kids Student Edition",
+                        url: "https://kids.britannica.com/students",
+                        domain: "kids.britannica.com/students",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Student Verified",
+                        snippet: "Clear, age-tailored reference articles, interactive timelines, and homework-safe knowledge guides verified by educators."
+                    },
+                    {
+                        title: "NASA Climate Kids & Earth Science",
+                        url: "https://climatekids.nasa.gov",
+                        domain: "climatekids.nasa.gov",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "STEM Verified",
+                        snippet: "Engaging NASA Earth science guides, weather satellite images, and interactive games exploring oceans and atmosphere."
+                    },
+                    {
+                        title: "Smithsonian Kids' Illustrated Showcase",
+                        url: "https://www.si.edu/kids",
+                        domain: "si.edu/kids",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Museum Archive",
+                        snippet: "Examine high-definition photos of natural history specimens, giant pandas, historic airplanes, and mineral crystals."
+                    }
+                ],
+                visual: [
+                    {
+                        title: "DK FindOut! - 3D Visual Models & Illustrated Guides",
+                        url: "https://www.dkfindout.com",
+                        domain: "dkfindout.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive 3D",
+                        snippet: "Interact with 3D models of dinosaurs, spacecraft, ancient castles, volcanoes, and anatomical wonders with visual diagrams."
+                    },
+                    {
+                        title: "NASA Image & Video Library for Students",
+                        url: "https://images.nasa.gov",
+                        domain: "images.nasa.gov",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Space Imagery",
+                        snippet: "Browse real high-resolution photographs from rovers, space probes, and orbiting telescopes depicting planets and galaxies."
+                    },
+                    {
+                        title: "Exploratorium Hands-on Lab Exhibits",
+                        url: "https://www.exploratorium.edu",
+                        domain: "exploratorium.edu",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive Lab",
+                        snippet: "Interactive online science experiments, light and optical illusions, and nature guides."
+                    },
+                    {
+                        title: "San Diego Zoo Wildlife Safari Hub",
+                        url: "https://kids.sandiegozoo.org",
+                        domain: "kids.sandiegozoo.org",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Wildlife Hub",
+                        snippet: "Live animal habitat webcams, wildlife photography, and animal survival guides."
+                    }
+                ],
+                media: [
+                    {
+                        title: "Brains On! - Calm Science Audio Podcast for Curious Kids",
+                        url: "https://www.brainson.org",
+                        domain: "brainson.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Quiet Podcast",
+                        snippet: "Soothing audio episodes answering kid-submitted science questions with gentle soundscapes and friendly hosts."
+                    },
+                    {
+                        title: "Smash Boom Best - Friendly Fact-Based Debate Audio",
+                        url: "https://www.smashboom.org",
+                        domain: "smashboom.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Calm Audio",
+                        snippet: "Fun and gentle debate show where kids learn how to defend their opinions with facts (Lava vs. Quick Sand, Cats vs. Dogs)."
+                    },
+                    {
+                        title: "TED-Ed Earth & Animal Lessons",
+                        url: "https://ed.ted.com",
+                        domain: "ed.ted.com",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Student Animation",
+                        snippet: "Engaging 5-minute animated lessons explaining animal biology, ecosystems, and historical mysteries."
+                    }
+                ]
+            },
+            early: {
+                all: [
+                    {
+                        title: "PBS KIDS - Interactive Learning, Science & Games",
+                        url: "https://pbskids.org",
+                        domain: "pbskids.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Curriculum Safe",
+                        snippet: "Award-winning educational portal featuring math puzzles, literacy activities, science quests, and gentle safe exploration."
+                    },
+                    {
+                        title: "DK FindOut! - Big Illustrated Guides for Early Learners",
+                        url: "https://www.dkfindout.com",
+                        domain: "dkfindout.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive 3D",
+                        snippet: "Explore big colorful 3D pictures, labeled animal diagrams, and fun audio sounds explaining nature and dinosaurs."
+                    },
+                    {
+                        title: "Storyline Online - Celebrated Actors Reading Children's Books",
+                        url: "https://storylineonline.net",
+                        domain: "storylineonline.net",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Calm Storytelling",
+                        snippet: "Peaceful, beautifully illustrated audio-visual read-alouds with gentle narration for calm listening and bedtime wonder."
+                    },
+                    {
+                        title: "National Geographic Little Kids Explorer",
+                        url: "https://kids.nationalgeographic.com",
+                        domain: "kids.nationalgeographic.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Verified Safe Portal",
+                        snippet: "Friendly animal photos, gentle nature facts, and fun audio games made especially for little learners."
+                    },
+                    {
+                        title: "NASA Kids' Club - Space Explorers",
+                        url: "https://www.nasa.gov/learning-resources/nasa-kids-club/",
+                        domain: "nasa.gov/kids",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "STEM Verified",
+                        snippet: "Fun space games, cartoon astronauts, and easy solar system facts introducing young children to rockets and planets."
+                    },
+                    {
+                        title: "Brains On! - Kid-Safe Audio Science",
+                        url: "https://www.brainson.org",
+                        domain: "brainson.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Quiet Podcast",
+                        snippet: "Gentle, award-winning science audio podcast answering kids' questions with soothing soundscapes and zero noise traps."
+                    }
+                ],
+                educational: [
+                    {
+                        title: "PBS KIDS - Interactive Learning, Science & Games",
+                        url: "https://pbskids.org",
+                        domain: "pbskids.org",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Curriculum Safe",
+                        snippet: "Award-winning educational portal featuring math puzzles, literacy activities, science quests, and gentle safe exploration."
+                    },
+                    {
+                        title: "National Geographic Little Kids Explorer",
+                        url: "https://kids.nationalgeographic.com",
+                        domain: "kids.nationalgeographic.com",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Verified Safe Portal",
+                        snippet: "Friendly animal photos, gentle nature facts, and fun audio games made especially for little learners."
+                    },
+                    {
+                        title: "Kiddle Facts for Young Students",
+                        url: "https://www.kiddle.co",
+                        domain: "kiddle.co",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "Filtered Reference",
+                        snippet: "Easy-to-read reference guide explaining topics with simple words, big colorful pictures, and clean safe pages."
+                    },
+                    {
+                        title: "NASA Kids' Club - Space Explorers",
+                        url: "https://www.nasa.gov/learning-resources/nasa-kids-club/",
+                        domain: "nasa.gov/kids",
+                        category: "Educational Site",
+                        tabCategory: "educational",
+                        badge: "STEM Verified",
+                        snippet: "Fun space games, cartoon astronauts, and easy solar system facts introducing young children to space."
+                    }
+                ],
+                visual: [
+                    {
+                        title: "DK FindOut! - Big Illustrated Guides for Early Learners",
+                        url: "https://www.dkfindout.com",
+                        domain: "dkfindout.com",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Interactive 3D",
+                        snippet: "Explore big colorful 3D pictures, labeled animal diagrams, and fun audio sounds explaining nature and dinosaurs."
+                    },
+                    {
+                        title: "San Diego Zoo Kids Wildlife Safari",
+                        url: "https://kids.sandiegozoo.org",
+                        domain: "kids.sandiegozoo.org",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Wildlife Cam",
+                        snippet: "Live animal webcams, friendly habitat photos, and baby animal stories showing real nature."
+                    },
+                    {
+                        title: "Kiddle Visual Picture & Diagram Gallery",
+                        url: "https://www.kiddle.co/images",
+                        domain: "kiddle.co/images",
+                        category: "Visual Exploration",
+                        tabCategory: "visual",
+                        badge: "Photo Gallery",
+                        snippet: "Kid-filtered visual photo gallery, annotated illustrations, and graphic breakdown for visual learners."
+                    }
+                ],
+                media: [
+                    {
+                        title: "Storyline Online - Celebrated Actors Reading Children's Books",
+                        url: "https://storylineonline.net",
+                        domain: "storylineonline.net",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Calm Storytelling",
+                        snippet: "Peaceful, beautifully illustrated audio-visual read-alouds with gentle narration for calm listening and bedtime wonder."
+                    },
+                    {
+                        title: "PBS KIDS Safe Video - Commercial-Free Learning Episodes",
+                        url: "https://pbskids.org/video",
+                        domain: "pbskids.org/video",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Ad-Free Video",
+                        snippet: "Calm, ad-free educational video episodes, narrated explanations, and gentle animated clips."
+                    },
+                    {
+                        title: "Brains On! - Kid-Safe Audio Science",
+                        url: "https://www.brainson.org",
+                        domain: "brainson.org",
+                        category: "Safe Quiet Media",
+                        tabCategory: "media",
+                        badge: "Quiet Podcast",
+                        snippet: "Gentle, award-winning science audio podcast answering kids' questions with soothing soundscapes."
+                    }
+                ]
+            }
+        };
+
+        const CURIOSITIES_BY_TIER = {
+            teens: [
+                { label: "🌌 Astrophysics", query: "James Webb space telescope discoveries astrophysics", cat: "visual" },
+                { label: "🧬 CRISPR & Genetics", query: "CRISPR gene editing genetics research", cat: "educational" },
+                { label: "🏛️ World History", query: "World history ancient civilizations archaeology", cat: "educational" },
+                { label: "⚛️ Quantum Physics", query: "Quantum physics atomic theory simulations", cat: "visual" },
+                { label: "💻 Algorithms & AI", query: "Computer science algorithms machine learning fundamentals", cat: "educational" },
+                { label: "🎙️ Neuroscience", query: "Human brain neuroscience memory cognitive science", cat: "media" },
+                { label: "🎨 3D Anatomy", query: "3D interactive human body anatomy organ systems", cat: "visual" }
+            ],
+            middle: [
+                { label: "🚀 Mars Rovers", query: "Mars Perseverance rover space probe discoveries", cat: "visual" },
+                { label: "🏛️ Ancient Civilizations", query: "Ancient Roman and Egyptian civilizations history", cat: "educational" },
+                { label: "🐬 Marine Biology", query: "Deep ocean trench creatures marine biology", cat: "educational" },
+                { label: "🐍 Python Coding", query: "Python coding interactive beginner projects", cat: "educational" },
+                { label: "🎢 Physics Simulations", query: "Roller coaster physics kinetic energy simulations", cat: "visual" },
+                { label: "🎧 Smart Debates", query: "Smash Boom Best smart science debates", cat: "media" },
+                { label: "🎨 Optics Lab", query: "Light lenses and optical illusions Exploratorium", cat: "visual" }
+            ],
+            upper_elem: [
+                { label: "🦖 Dinosaurs", query: "Dinosaur fossils and T-Rex facts", cat: "educational" },
+                { label: "🌋 Volcanoes", query: "Volcano eruptions and magma", cat: "visual" },
+                { label: "🪐 Solar System", query: "Solar system planets and moons", cat: "visual" },
+                { label: "🐬 Ocean Life", query: "Coral reef marine life animals", cat: "educational" },
+                { label: "💻 Coding Puzzles", query: "Fun coding puzzles for kids", cat: "educational" },
+                { label: "🎧 Brains On! Science", query: "Brains On science audio podcast mysteries", cat: "media" },
+                { label: "🎨 3D Models", query: "DK FindOut 3D models animals and nature", cat: "visual" }
+            ],
+            early: [
+                { label: "🦖 Dinosaurs", query: "Friendly dinosaur pictures and facts", cat: "educational" },
+                { label: "🌋 Volcanoes", query: "Gentle volcano pictures and earth facts", cat: "visual" },
+                { label: "🪐 Planets & Stars", query: "Planets stars and moon for young kids", cat: "visual" },
+                { label: "🐬 Ocean Animals", query: "Dolphins whales and sea turtles facts", cat: "educational" },
+                { label: "💻 Coding Games", query: "Fun coding games for kids", cat: "educational" },
+                { label: "🎧 Bedtime Stories", query: "Quiet bedtime story audio and nature sounds", cat: "media" },
+                { label: "🎨 Zoo Baby Animals", query: "San Diego Zoo baby animals webcams", cat: "visual" }
+            ]
+        };
+
+        function getAgeTier(age) {
+            const a = parseInt(age, 10) || 8;
+            if (a >= 14) return 'teens';
+            if (a >= 11) return 'middle';
+            if (a >= 8) return 'upper_elem';
+            return 'early';
+        }
+
+        let activeTier = getAgeTier("<%= formAge || 8 %>");
+        let SPOTLIGHT_DATA = SPOTLIGHT_BY_TIER[activeTier] || SPOTLIGHT_BY_TIER.upper_elem;
+
+        function updateCuriositiesForTier(tier) {
+            const wrap = document.getElementById('quick-curiosities-wrap');
+            const promptEl = document.getElementById('curiosity-prompt-label');
+            if (promptEl) {
+                promptEl.textContent = tier === 'teens' ? 'Research Topics:' : tier === 'middle' ? 'Inquiry Topics:' : 'Gentle Topics:';
+            }
+            if (!wrap || !CURIOSITIES_BY_TIER[tier]) return;
+            wrap.innerHTML = CURIOSITIES_BY_TIER[tier].map(item => `
+                <a href="javascript:void(0)" onclick="quickSearch('${item.query.replace(/'/g, "\\'")}')" class="curiosity-pebble" data-tab-category="${item.cat}">
+                    ${item.label}
+                </a>
+            `).join('');
+        }
+
+        function handleAgeChange(newAge) {
+            const parsed = parseInt(newAge, 10) || 8;
+            const clamped = Math.min(17, Math.max(5, parsed));
+            activeTier = getAgeTier(clamped);
+            SPOTLIGHT_DATA = SPOTLIGHT_BY_TIER[activeTier] || SPOTLIGHT_BY_TIER.upper_elem;
+            
+            // 1. Update quick topic pebbles to match new maturity
+            updateCuriositiesForTier(activeTier);
+            
+            // 2. Update inquiry age tag if on results page
+            const ageTag = document.querySelector('.inquiry-age-tag');
+            if (ageTag) {
+                ageTag.textContent = `Evaluated for Age ${clamped}`;
+            }
+
+            // 3. Re-render spotlight cards on the current tab
+            const currentTab = document.getElementById('tab-input')?.value || 'all';
+            selectGardenTab(currentTab);
+        }
+
+        function selectGardenTab(tabName, isUserClick = false) {
+            // 1. Update tab button active states
+            const tabButtons = document.querySelectorAll('.garden-tab');
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            const activeBtn = document.getElementById('tab-btn-' + tabName);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // 2. Update simulated address bar path (clean, never includes Age)
+            const pathEl = document.getElementById('address-bar-path');
+            const queryField = document.getElementById('query');
+            const queryVal = queryField ? queryField.value.trim() : '';
+            if (pathEl) {
+                let p = '/explore';
+                const params = [];
+                if (queryVal) params.push('q=' + encodeURIComponent(queryVal));
+                if (tabName !== 'all') params.push('tab=' + encodeURIComponent(tabName));
+                if (params.length > 0) p += '?' + params.join('&');
+                pathEl.textContent = p;
+            }
+
+            // 3. Update hidden input in search form
+            const tabInput = document.getElementById('tab-input');
+            if (tabInput) {
+                tabInput.value = tabName;
+            }
+
+            // If user typed a search query on the discovery home and clicked a category tab, search it directly!
+            const initialCards = document.querySelectorAll('#results-deck .discovery-card');
+            if (isUserClick && initialCards.length === 0 && queryVal.length > 0) {
+                const searchForm = document.getElementById('child-search-form');
+                if (searchForm) {
+                    searchForm.submit();
+                    return;
+                }
+            }
+
+            // 4. Update browser URL history (no age in path)
+            try {
+                let browserUrl = '/';
+                const urlParams = [];
+                if (queryVal) urlParams.push('q=' + encodeURIComponent(queryVal));
+                if (tabName !== 'all') urlParams.push('tab=' + encodeURIComponent(tabName));
+                if (urlParams.length > 0) browserUrl = '/explore?' + urlParams.join('&');
+                window.history.replaceState({ tab: tabName, q: queryVal }, '', browserUrl);
+            } catch (_) {}
+
+            // 5. Handle empty / welcome state spotlight
+            const spotlightContainer = document.getElementById('category-welcome-spotlight');
+            if (spotlightContainer) {
+                spotlightContainer.style.display = 'block';
+                renderSpotlightCards(tabName);
+            }
+
+            // 6. Filter search results if present
+            const cards = document.querySelectorAll('.discovery-card[data-tab-category]');
+            const fallbackDeck = document.getElementById('results-fallback-deck');
+            const fallbackCards = document.getElementById('results-fallback-cards');
+            const fallbackHeader = document.getElementById('results-fallback-header');
+
+            let visibleCount = 0;
+            if (cards.length > 0) {
+                cards.forEach(card => {
+                    const cardCat = card.getAttribute('data-tab-category');
+                    if (tabName === 'all' || cardCat === tabName) {
+                        card.style.display = '';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // If specific category has 0 results from AI, render curated fallback items
+                if (visibleCount === 0 && fallbackDeck && fallbackCards && SPOTLIGHT_DATA[tabName]) {
+                    fallbackDeck.style.display = 'block';
+                    let catTitle = (activeTier === 'teens') ? 'Academic Portals' : 'Educational Portals';
+                    if (tabName === 'visual') catTitle = (activeTier === 'teens') ? 'Observatories & 3D Simulations' : 'Visual & 3D Interactive Guides';
+                    if (tabName === 'media') catTitle = (activeTier === 'teens') ? 'Lectures, Deep-Dives & Podcasts' : 'Safe Quiet Media & Audio Stories';
+                    if (fallbackHeader) {
+                        fallbackHeader.textContent = `🌿 Verified Safe ${catTitle} for "${queryVal || 'Discovery'}"`;
+                    }
+                    fallbackCards.innerHTML = SPOTLIGHT_DATA[tabName].map((item, idx) => `
+                        <article class="discovery-card" id="fallback-card-${idx}" data-tab-category="${tabName}">
+                            <div class="card-top-row">
+                                <span class="domain-leaf">🌐 ${item.domain}</span>
+                                <span class="category-pebble">${item.category}</span>
+                                <span class="safety-check-chip">✓ ${item.badge}</span>
+                            </div>
+                            <h2 class="card-headline">
+                                <a href="${item.url}" target="_blank" rel="noopener">${item.title}</a>
+                            </h2>
+                            <p class="card-body-text">${item.snippet}</p>
+                            <div class="card-action-row">
+                                <a href="${item.url}" target="_blank" rel="noopener" class="safe-visit-btn">
+                                    <span>Open Safe Page</span>
+                                    <span>↗</span>
+                                </a>
+                            </div>
+                        </article>
+                    `).join('');
+                } else if (fallbackDeck) {
+                    fallbackDeck.style.display = 'none';
+                }
+
+                // 7. Update tally counter
+                const tallyEl = document.getElementById('results-tally-count');
+                if (tallyEl) {
+                    let catLabel = 'verified safe learning destinations';
+                    if (tabName === 'educational') catLabel = (activeTier === 'teens') ? 'verified secondary & academic research portals' : 'verified educational learning sites';
+                    if (tabName === 'visual') catLabel = (activeTier === 'teens') ? 'verified observatories, 3D anatomy & STEM simulations' : 'verified visual & 3D exploration guides';
+                    if (tabName === 'media') catLabel = (activeTier === 'teens') ? 'verified academic lectures, documentaries & podcasts' : 'verified safe quiet media & audio destinations';
+                    const displayCount = visibleCount > 0 ? visibleCount : (SPOTLIGHT_DATA[tabName] ? SPOTLIGHT_DATA[tabName].length : 0);
+                    tallyEl.textContent = `Found ${displayCount} ${catLabel}${queryVal ? ` for "${queryVal}"` : ''}`;
+                }
+            }
+
+            // 8. Filter curiosity pebbles on home page
+            const pebbles = document.querySelectorAll('.curiosity-pebble');
+            pebbles.forEach(peb => {
+                const pebCat = peb.getAttribute('data-tab-category');
+                if (tabName === 'all' || !pebCat || pebCat === tabName) {
+                    peb.style.display = '';
+                } else {
+                    peb.style.display = 'none';
+                }
+            });
+        }
+
+        function renderSpotlightCards(tabName) {
+            const container = document.getElementById('spotlight-cards-deck');
+            const header = document.getElementById('spotlight-header');
+            if (!container || !SPOTLIGHT_DATA[tabName]) return;
+            
+            let title = '🌿 All Verified Safe Discoveries';
+            if (activeTier === 'teens') {
+                if (tabName === 'all') title = '🌿 Verified Secondary & Academic Research Collections';
+                if (tabName === 'educational') title = '📚 Verified Academic Reference & High School Portals';
+                if (tabName === 'visual') title = '🎨 Observatories, 3D Anatomy & University STEM Models';
+                if (tabName === 'media') title = '🎧 Curated Academic Lectures, CrashCourse & Documentaries';
+            } else if (activeTier === 'middle') {
+                if (tabName === 'all') title = '🌿 Verified Middle School Discovery Destinations';
+                if (tabName === 'educational') title = '📚 Verified Middle School Reference & Student Science Hubs';
+                if (tabName === 'visual') title = '🎨 Interactive Science Exhibits & High-Res Space Imagery';
+                if (tabName === 'media') title = '🎧 Student Video Lessons, Documentaries & Critical Debates';
+            } else if (activeTier === 'upper_elem') {
+                if (tabName === 'all') title = '🌿 Verified Safe Upper Elementary Discoveries';
+                if (tabName === 'educational') title = '📚 Verified Elementary Encyclopedias & Nature Portals';
+                if (tabName === 'visual') title = '🎨 3D Animal Cutaways & Interactive Lab Explorations';
+                if (tabName === 'media') title = '🎧 Curious Science Podcasts & Thoughtful Debates';
+            } else {
+                if (tabName === 'all') title = '🌿 Verified Gentle Discoveries for Young Explorers';
+                if (tabName === 'educational') title = '📚 Gentle Early Learning Portals & Story Guides';
+                if (tabName === 'visual') title = '🎨 Colorful Wildlife Safaris & Big 3D Pictures';
+                if (tabName === 'media') title = '🎧 Peaceful Audio Stories & Ad-Free Learning Shows';
+            }
+            if (header) header.textContent = title;
+
+            container.innerHTML = SPOTLIGHT_DATA[tabName].map((item, idx) => `
+                <article class="discovery-card" id="spotlight-card-${idx}">
+                    <div class="card-top-row">
+                        <span class="domain-leaf">🌐 ${item.domain}</span>
+                        <span class="category-pebble">${item.category}</span>
+                        <span class="safety-check-chip">✓ ${item.badge}</span>
+                    </div>
+                    <h2 class="card-headline">
+                        <a href="${item.url}" target="_blank" rel="noopener">${item.title}</a>
+                    </h2>
+                    <p class="card-body-text">${item.snippet}</p>
+                    <div class="card-action-row">
+                        <a href="${item.url}" target="_blank" rel="noopener" class="safe-visit-btn">
+                            <span>Open Safe Page</span>
+                            <span>↗</span>
+                        </a>
+                    </div>
+                </article>
+            `).join('');
+        }
+
+        // Initialize active tab on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentTab = "<%= (typeof activeTab !== 'undefined' && activeTab) ? activeTab : 'all' %>";
+            selectGardenTab(currentTab || 'all');
+        });
     </script>
 </body>
 </html>

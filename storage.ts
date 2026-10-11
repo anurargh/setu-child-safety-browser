@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import crypto from "crypto";
-import { db, handleFirestoreError, OperationType } from "./firebaseConfig";
+import { db as firestoreDb, handleFirestoreError, OperationType } from "./firebaseConfig";
 import { doc, setDoc, getDoc, collection, getDocs } from "firebase/firestore";
 
 export interface ResearchCitation {
@@ -248,7 +248,7 @@ export function createUser(params: {
 
 export async function syncUserToFirestore(user: User): Promise<void> {
   try {
-    const userDocRef = doc(db, "users", user.id);
+    const userDocRef = doc(firestoreDb, "users", user.id);
     await setDoc(
       userDocRef,
       {
@@ -270,7 +270,7 @@ export async function syncUserToFirestore(user: User): Promise<void> {
 
 export async function syncQueryToFirestore(queryLog: QueryLog): Promise<void> {
   try {
-    const queryDocRef = doc(db, "queries", queryLog.id);
+    const queryDocRef = doc(firestoreDb, "queries", queryLog.id);
     await setDoc(queryDocRef, {
       id: queryLog.id,
       userId: queryLog.userId || "",

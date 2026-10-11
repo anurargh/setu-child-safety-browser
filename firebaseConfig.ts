@@ -1,8 +1,28 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore, doc, getDocFromServer } from "firebase/firestore";
+import { getFirestore, doc, getDocFromServer, setLogLevel } from "firebase/firestore";
 import fs from "fs";
 import path from "path";
+
+// Silence harmless internal Firestore gRPC idle stream disconnect logs
+try {
+  setLogLevel("silent");
+} catch (_) {}
+
+// Intercept and suppress benign Firestore idle stream disconnect messages
+const _originalConsoleError = console.error;
+console.error = (...args: any[]) => {
+  const combined = args.map((a) => (typeof a === "string" ? a : a?.message || "")).join(" ");
+  if (
+    combined.includes("Disconnecting idle stream") ||
+    combined.includes("Timed out waiting for new targets") ||
+    combined.includes("GrpcConnection RPC 'Listen' stream")
+  ) {
+    // Harmless Firestore idle stream disconnect - do not log as fatal error
+    return;
+  }
+  _originalConsoleError(...args);
+};
 
 // Read configuration from firebase-applet-config.json
 const configPath = path.join(process.cwd(), "firebase-applet-config.json");
