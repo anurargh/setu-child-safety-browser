@@ -181,7 +181,14 @@
         <section class="tended-activity-section" id="activity-logs-section">
             
             <div class="activity-header-bar">
-                <h2>Exploration Activity Log</h2>
+                <div>
+                    <h2>Exploration Activity Log</h2>
+                    <% if (user) { %>
+                        <p style="margin: 0.2rem 0 0 0; font-size: 0.85rem; color: #58675b; font-weight: 500;">
+                            Account history for: <strong><%= user.email %></strong>
+                        </p>
+                    <% } %>
+                </div>
                 
                 <div class="activity-controls-cluster">
                     <div class="filter-stone-group" aria-label="Filter Inquiries">
@@ -245,8 +252,19 @@
                     </table>
                 </div>
             <% } else { %>
-                <div style="text-align: center; padding: 3rem 1rem; color: #6C7A70;">
-                    <p>No activity logs found for filter "<strong><%= currentFilter %></strong>".</p>
+                <div class="empty-garden-state" style="text-align: center; padding: 3rem 1.5rem; background: rgba(255,255,255,0.6); border-radius: 20px; border: 1px dashed rgba(84, 122, 93, 0.3); margin-top: 1rem;">
+                    <% if (totalCount === 0) { %>
+                        <div style="font-size: 2.2rem; margin-bottom: 0.5rem;">🌱</div>
+                        <h3 style="font-family: 'Fraunces', serif; font-size: 1.25rem; color: #203124; margin-bottom: 0.35rem;">No Searches Recorded Yet for This Account</h3>
+                        <p style="color: #58675b; font-size: 0.92rem; max-width: 520px; margin: 0 auto 1.25rem; line-height: 1.5;">
+                            Searches conducted while signed into <strong><%= user ? user.email : 'this profile' %></strong> will be logged here with pediatric safety analysis and academic PubMed citations.
+                        </p>
+                        <a href="/" class="tended-primary-btn" style="display: inline-flex; align-items: center; gap: 0.4rem; text-decoration: none; padding: 0.6rem 1.25rem; border-radius: 9999px; background: #2f5439; color: #fff; font-weight: 600; font-size: 0.88rem;">
+                            <span>🔍 Try a Child Safe Search</span>
+                        </a>
+                    <% } else { %>
+                        <p style="color: #6C7A70; margin: 0;">No activity logs found matching filter "<strong><%= currentFilter %></strong>".</p>
+                    <% } %>
                 </div>
             <% } %>
 

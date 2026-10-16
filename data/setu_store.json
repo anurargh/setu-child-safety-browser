@@ -157,6 +157,48 @@
   ],
   "queries": [
     {
+      "query": "interactive chemistry simulations",
+      "age": 11,
+      "status": "Allowed",
+      "explanation": "This query is generally safe for a 11-year-old child.",
+      "searchResultsCount": 13,
+      "alternatives": [
+        "interactive chemistry simulations for kids",
+        "interactive chemistry simulations facts",
+        "learning interactive chemistry simulations"
+      ],
+      "timestamp": "10/16/2026, 2:11:54 PM UTC",
+      "ipAddress": "127.0.0.1",
+      "id": "log-1792159914116-399"
+    },
+    {
+      "query": "child porn",
+      "age": 8,
+      "status": "Blocked",
+      "explanation": "This search contains blocked keywords that pose significant safety risks for a 8-year-old child.",
+      "researchCitation": {
+        "title": "Adolescents and Pornography: A Review of 20 Years of Research",
+        "authors": "Peter J, Valkenburg PM",
+        "journal": "The Journal of Sex Research",
+        "year": "2016",
+        "pmid": "27105446",
+        "url": "https://pubmed.ncbi.nlm.nih.gov/27105446/",
+        "keyTakeaway": "Extensive developmental research indicates that early exposure to sexually explicit material is linked to distorted perceptions of relationships, gender stereotyping, and reduced emotional well-being in youth.",
+        "quoteSnippet": "Protective digital filtering and parental guidance play a crucial protective role in mitigating the developmental risks associated with premature exposure to online explicit material."
+      },
+      "searchResultsCount": 0,
+      "alternatives": [
+        "child porn for kids",
+        "child porn facts",
+        "learning child porn"
+      ],
+      "timestamp": "10/16/2026, 1:47:10 PM UTC",
+      "ipAddress": "169.254.169.126",
+      "id": "log-1792158430190-883",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
+    },
+    {
       "query": "pornography",
       "age": 17,
       "status": "Blocked",
@@ -175,7 +217,9 @@
       "alternatives": [],
       "timestamp": "10/11/2026, 3:34:48 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791732888962-270"
+      "id": "log-1791732888962-270",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "antidepressants",
@@ -196,7 +240,9 @@
       "alternatives": [],
       "timestamp": "10/11/2026, 3:33:41 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791732821931-811"
+      "id": "log-1791732821931-811",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "antidepressants",
@@ -221,7 +267,9 @@
       ],
       "timestamp": "10/11/2026, 3:32:06 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791732726060-174"
+      "id": "log-1791732726060-174",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "drugs",
@@ -246,7 +294,9 @@
       ],
       "timestamp": "10/11/2026, 3:30:31 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791732631192-701"
+      "id": "log-1791732631192-701",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "antidepressant buy",
@@ -267,7 +317,9 @@
       "alternatives": [],
       "timestamp": "10/11/2026, 3:20:50 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791732050018-352"
+      "id": "log-1791732050018-352",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "knife",
@@ -292,7 +344,9 @@
       ],
       "timestamp": "10/11/2026, 3:20:04 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791732004753-737"
+      "id": "log-1791732004753-737",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look more attractive than my friend",
@@ -313,7 +367,9 @@
       "alternatives": [],
       "timestamp": "10/11/2026, 3:18:58 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731938701-248"
+      "id": "log-1791731938701-248",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -338,7 +394,9 @@
       ],
       "timestamp": "10/11/2026, 3:16:48 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731808588-904"
+      "id": "log-1791731808588-904",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look more physically attractive than  my friend",
@@ -353,7 +411,9 @@
       ],
       "timestamp": "10/11/2026, 3:15:14 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731714561-636"
+      "id": "log-1791731714561-636",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look more physically attractive than  my friend",
@@ -368,7 +428,9 @@
       ],
       "timestamp": "10/11/2026, 3:15:14 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731714098-193"
+      "id": "log-1791731714098-193",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look more physically attractive tha my friend",
@@ -383,7 +445,9 @@
       ],
       "timestamp": "10/11/2026, 3:14:59 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731699742-708"
+      "id": "log-1791731699742-708",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -408,7 +472,9 @@
       ],
       "timestamp": "10/11/2026, 3:14:20 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731660441-670"
+      "id": "log-1791731660441-670",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -423,7 +489,9 @@
       ],
       "timestamp": "10/11/2026, 3:13:57 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731637775-580"
+      "id": "log-1791731637775-580",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -448,7 +516,9 @@
       ],
       "timestamp": "10/11/2026, 3:13:47 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731627179-859"
+      "id": "log-1791731627179-859",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -473,7 +543,9 @@
       ],
       "timestamp": "10/11/2026, 3:13:17 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731597845-368"
+      "id": "log-1791731597845-368",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -498,7 +570,9 @@
       ],
       "timestamp": "10/11/2026, 3:13:16 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731596009-286"
+      "id": "log-1791731596009-286",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -513,7 +587,9 @@
       ],
       "timestamp": "10/11/2026, 3:13:12 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731592952-49"
+      "id": "log-1791731592952-49",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "how to look better",
@@ -538,7 +614,9 @@
       ],
       "timestamp": "10/11/2026, 3:13:06 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791731586671-329"
+      "id": "log-1791731586671-329",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "knife",
@@ -553,7 +631,9 @@
       ],
       "timestamp": "10/11/2026, 2:26:15 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728775594-924"
+      "id": "log-1791728775594-924",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "knife",
@@ -578,7 +658,9 @@
       ],
       "timestamp": "10/11/2026, 2:25:26 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728726096-671"
+      "id": "log-1791728726096-671",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "knife",
@@ -593,7 +675,9 @@
       ],
       "timestamp": "10/11/2026, 2:24:48 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728688266-929"
+      "id": "log-1791728688266-929",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "Quiet bedtime story audio and nature sounds",
@@ -608,7 +692,9 @@
       ],
       "timestamp": "10/11/2026, 2:24:09 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728649072-560"
+      "id": "log-1791728649072-560",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "Volcano eruptions and magma",
@@ -623,7 +709,9 @@
       ],
       "timestamp": "10/11/2026, 2:23:29 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728609112-141"
+      "id": "log-1791728609112-141",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "Volcano eruptions and magma",
@@ -638,7 +726,9 @@
       ],
       "timestamp": "10/11/2026, 2:23:27 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728607512-136"
+      "id": "log-1791728607512-136",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "Volcano eruptions and magma",
@@ -653,7 +743,9 @@
       ],
       "timestamp": "10/11/2026, 2:23:26 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728606761-421"
+      "id": "log-1791728606761-421",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "Volcano eruptions and magma",
@@ -668,7 +760,9 @@
       ],
       "timestamp": "10/11/2026, 2:23:25 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791728605817-855"
+      "id": "log-1791728605817-855",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "volcanoes",
@@ -683,7 +777,9 @@
       ],
       "timestamp": "10/11/2026, 1:57:37 PM UTC",
       "ipAddress": "127.0.0.1",
-      "id": "log-1791727057750-292"
+      "id": "log-1791727057750-292",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "query": "poppins",
@@ -698,7 +794,9 @@
       ],
       "timestamp": "10/11/2026, 1:49:49 PM UTC",
       "ipAddress": "169.254.169.126",
-      "id": "log-1791726589933-600"
+      "id": "log-1791726589933-600",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "id": "seed-1",
@@ -713,7 +811,9 @@
         "T-Rex facts"
       ],
       "timestamp": "2026-10-09 07:24:17",
-      "ipAddress": "127.0.0.1"
+      "ipAddress": "127.0.0.1",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "id": "seed-2",
@@ -738,7 +838,9 @@
         "cybersecurity ethics"
       ],
       "timestamp": "2026-10-09 10:24:17",
-      "ipAddress": "127.0.0.1"
+      "ipAddress": "127.0.0.1",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     },
     {
       "id": "seed-3",
@@ -763,7 +865,9 @@
         "healthy coping strategies"
       ],
       "timestamp": "2026-10-09 11:24:17",
-      "ipAddress": "127.0.0.1"
+      "ipAddress": "127.0.0.1",
+      "userId": "usr_1791548667324_a18ce278",
+      "userEmail": "anuragsinghsisodiya21@gmail.com"
     }
   ]
 }

@@ -1263,6 +1263,7 @@ function setSessionCookies(res: Response, sessionToken: string) {
 function clearSessionCookies(res: Response, userId?: string) {
   res.clearCookie("setu_session_token", { sameSite: "none", secure: true });
   res.clearCookie("parent_session", { sameSite: "none", secure: true });
+  res.clearCookie("setu_last_email", { sameSite: "none", secure: true });
   if (userId) {
     res.clearCookie(`setu_pin_unlocked_${userId}`, { sameSite: "none", secure: true });
   }
@@ -1312,6 +1313,23 @@ app.get(["/explore", "/search"], async (req: Request, res: Response) => {
   }
 
   const result = await evaluateQueryWithAi(childQuery, childAge);
+
+  // Log to persistent database store for this account
+  const timestamp = new Date().toLocaleString("en-US", { timeZoneName: "short" });
+  storage.addQueryLog({
+    userId: req.user ? req.user.id : undefined,
+    userEmail: req.user ? req.user.email : undefined,
+    query: childQuery,
+    age: childAge,
+    status: result.status,
+    explanation: result.explanation,
+    researchCitation: result.researchCitation,
+    searchResultsCount: result.searchResults.length,
+    alternatives: result.safeAlternatives,
+    timestamp,
+    ipAddress: req.ip || "127.0.0.1",
+  });
+
   res.render("index", {
     queryResult: result,
     formQuery: childQuery,
@@ -2070,6 +2088,16 @@ app.post("/api/auth/google/sandbox", (req: Request, res: Response) => {
 
 // 12. Parent PIN Login GET
 app.get("/parent-login", (req: Request, res: Response) => {
+  if (req.query.switch === "1") {
+    res.clearCookie("setu_last_email", { sameSite: "none", secure: true });
+    return res.render("parent-login", {
+      error: null,
+      user: null,
+      rememberedUser: null,
+      rememberedEmail: "",
+    });
+  }
+
   // If user is logged in:
   if (req.user) {
     // If no PIN created yet, prompt immediately
@@ -2199,7 +2227,10 @@ app.post("/parent-logout", (req: Request, res: Response) => {
 // 15. Parent Dashboard GET (Protected)
 app.get("/dashboard", requireParentAuth, (req: Request, res: Response) => {
   const filter = (req.query.filter || "all").toString().toLowerCase();
-  const allQueries = storage.getQueryLogs(req.user ? req.user.id : undefined);
+  const allQueries = storage.getQueryLogs(
+    req.user ? req.user.id : undefined,
+    req.user ? req.user.email : undefined
+  );
 
   let filteredQueries = allQueries;
   if (filter === "allowed") {
@@ -2323,14 +2354,20 @@ app.post("/account/update-profile", requireParentAuth, (req: Request, res: Respo
 
 // 19. Clear Logs
 app.post("/parent-clear-logs", requireParentAuth, (req: Request, res: Response) => {
-  storage.clearQueryLogs(req.user ? req.user.id : undefined);
+  storage.clearQueryLogs(
+    req.user ? req.user.id : undefined,
+    req.user ? req.user.email : undefined
+  );
   res.redirect("/dashboard?msg=Logs%20cleared%20successfully.");
 });
 
 // 20. Export Logs Endpoint (JSON/CSV)
 app.get("/parent-export", requireParentAuth, (req: Request, res: Response) => {
   const format = (req.query.format || "json").toString();
-  const queries = storage.getQueryLogs(req.user ? req.user.id : undefined);
+  const queries = storage.getQueryLogs(
+    req.user ? req.user.id : undefined,
+    req.user ? req.user.email : undefined
+  );
 
   if (format === "csv") {
     res.setHeader("Content-Type", "text/csv");

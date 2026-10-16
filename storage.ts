@@ -425,22 +425,32 @@ export function addQueryLog(log: Omit<QueryLog, "id">): QueryLog {
   return newLog;
 }
 
-export function getQueryLogs(userId?: string): QueryLog[] {
-  if (userId) {
-    const userLogs = db.queries.filter((q) => q.userId === userId);
-    return userLogs.length > 0 ? userLogs : db.queries;
+export function getQueryLogs(userId?: string, userEmail?: string): QueryLog[] {
+  if (userId || userEmail) {
+    const normalizedEmail = (userEmail || "").trim().toLowerCase();
+    return db.queries.filter((q) => {
+      if (userId && q.userId === userId) return true;
+      if (normalizedEmail && q.userEmail && q.userEmail.toLowerCase() === normalizedEmail) return true;
+      return false;
+    });
   }
-  return db.queries;
+  return [];
 }
 
-export function clearQueryLogs(userId?: string): void {
-  if (userId) {
-    db.queries = db.queries.filter((q) => q.userId !== userId);
+export function clearQueryLogs(userId?: string, userEmail?: string): void {
+  if (userId || userEmail) {
+    const normalizedEmail = (userEmail || "").trim().toLowerCase();
+    db.queries = db.queries.filter((q) => {
+      if (userId && q.userId === userId) return false;
+      if (normalizedEmail && q.userEmail && q.userEmail.toLowerCase() === normalizedEmail) return false;
+      return true;
+    });
   } else {
     db.queries = [];
   }
   saveDatabase();
 }
+
 
 export function getAllUsersCount(): number {
   return db.users.length;
